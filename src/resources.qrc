@@ -6,5 +6,6 @@
         <file alias="applications-other.svg">icons/applications-other.svg</file>
         <file alias="system-users.svg">icons/system-users.svg</file>
         <file alias="view-list-details.svg">icons/view-list-details.svg</file>
+        <file alias="configure.svg">icons/configure.svg</file>
     </qresource>
 </RCC>

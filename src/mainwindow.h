@@ -1,10 +1,11 @@
 #pragma once
 
 #include <QMainWindow>
+#include <QPointer>
 
-class QListWidget;
-class QStackedWidget;
-class QWidget;
+class QTabWidget;
+class Sampler;
+class SettingsDialog;
 
 class MainWindow : public QMainWindow
 {
@@ -18,10 +19,12 @@ protected:
     void closeEvent(QCloseEvent *event) override;
 
 private:
-    void addPage(const QString &title, const QString &iconName, QWidget *page);
     void restoreSettings();
     void saveSettings();
+    void openSettings();
 
-    QListWidget *m_nav;
-    QStackedWidget *m_pages;
+    QTabWidget *m_tabs;
+    Sampler *m_sampler;
+    // Modeless, so it is kept and re-shown rather than rebuilt each time.
+    QPointer<SettingsDialog> m_settingsDialog;
 };

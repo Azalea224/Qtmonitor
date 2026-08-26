@@ -1,0 +1,10 @@
+[Domain]
+Name=Qtmonitor
+Icon=qtmonitor
+Description=Resource and task monitor
+
+[org.qtmonitor.signalprocess]
+Name=Signal another user's process
+Description=Authentication is required to send a signal to a process you do not own
+Policy=auth_admin
+Persistence=session
