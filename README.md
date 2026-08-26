@@ -2,8 +2,14 @@
 
 A Qt6/KF6 resource and task monitor for Linux — the clear, at-a-glance layout
 Windows Task Manager is known for, delivered as a Linux-native tool. Targets
-Arch Linux (CachyOS included) and runs correctly on any desktop environment
-or window manager (Plasma, GNOME, LXQt, Hyprland, Niri, sway, ...).
+Arch Linux and runs correctly on any desktop environment or window manager
+(Plasma, GNOME, LXQt, Hyprland, Niri, sway, ...).
+
+![The Processes tab: a live process table sorted by memory use](docs/images/processes.png)
+
+*Every screenshot here was taken on Hyprland with a dark palette. Qtmonitor
+paints itself from whatever palette your desktop supplies — nothing about the
+look is Plasma-, GNOME- or Hyprland-specific.*
 
 ## Status
 
@@ -38,6 +44,8 @@ only while the tab is visible.
 A resource sidebar — CPU, Memory, one row per GPU, per disk and per network
 interface — with a page for each, every sidebar row carrying a live sparkline.
 
+![The Performance tab on the CPU page](docs/images/performance-cpu.png)
+
 - **CPU**: overall utilization and current clock in the header, a per-core
   grid of small graphs below, and a details block with the model, maximum
   clock, scaling driver, current governor and energy-performance preference
@@ -69,6 +77,36 @@ speed, and re-derive their colors from the active palette.
 Drive and network data is only sampled while the Performance tab is on
 screen, the same rule the process list follows.
 
+<details>
+<summary><b>The other Performance pages</b> — memory, GPU, drives, network</summary>
+
+![The Memory page](docs/images/performance-memory.png)
+
+*Memory: RAM and swap over the last 60 seconds, scaled to installed memory,
+with the per-slot DIMM inventory below.*
+
+![The page for an NVIDIA card](docs/images/performance-gpu-nvidia.png)
+
+![The page for an AMD integrated GPU](docs/images/performance-gpu-amd.png)
+
+*Both cards in the same machine: the NVIDIA card measured through
+`nvidia-smi`, the AMD integrated GPU straight from sysfs. Each is detected
+once and read by whichever backend can actually see it.*
+
+![The page for an NVMe drive](docs/images/performance-disk.png)
+
+*Drives: throughput and active time are separate charts, because a disk can
+be saturated at a low transfer rate. The filesystems on the device are listed
+underneath.*
+
+![The page for an Ethernet interface](docs/images/performance-network.png)
+
+*Network: throughput with a self-scaling axis, plus link state, negotiated
+speed, addresses, since-boot totals and error counts. (The MAC address is
+blurred in this screenshot only.)*
+
+</details>
+
 ### Startup Apps
 
 Everything that starts with your session, from both mechanisms that matter on
@@ -84,12 +122,16 @@ Entries restricted to a desktop you are not running (`OnlyShowIn=KDE` on
 Hyprland, say) are listed and marked rather than hidden, because "installed
 but will never fire" is worth seeing.
 
+![The Startup Apps tab](docs/images/startup-apps.png)
+
 ### Users
 
 One row per user with their session summary — session type, desktop, seat,
 active state, session count, straight from logind — and their aggregate CPU
 and memory. Expand a row for that user's processes. Rows update in place, so
 an expanded or collapsed user stays that way while the numbers tick.
+
+![The Users tab with one user expanded](docs/images/users.png)
 
 ### Details
 
@@ -175,6 +217,8 @@ does, because somebody chose to create it.
 The gear button at the right-hand end of the tab bar opens a small preferences
 dialog. It is modeless and has no OK button: every change applies live and is
 saved immediately to `~/.config/qtmonitorrc`.
+
+![The settings dialog](docs/images/settings.png)
 
 | Setting | Options |
 |---|---|
