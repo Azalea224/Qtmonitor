@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Qtmonitor
+GenericName=Task Manager
+Comment=Monitor CPU, memory, disk, network and processes
+Exec=qtmonitor
+Icon=qtmonitor
+Terminal=false
+Categories=System;Monitor;Qt;
+Keywords=task;process;monitor;cpu;memory;
