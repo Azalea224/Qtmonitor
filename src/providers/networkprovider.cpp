@@ -1,5 +1,6 @@
 #include "networkprovider.h"
 
+#include <QCoreApplication>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -7,6 +8,7 @@
 #include <QTextStream>
 
 #include <algorithm>
+#include <utility>
 
 namespace {
 
@@ -40,39 +42,43 @@ bool isEphemeralVirtualInterface(const QString &name)
 QString describeKind(const QString &name, int arpType, bool wireless, bool physical)
 {
     if (wireless) {
-        return QStringLiteral("Wi-Fi");
+        return QCoreApplication::translate("NetworkProvider", "Wi-Fi");
     }
     switch (arpType) {
     case 1: // ARPHRD_ETHER
-        return physical ? QStringLiteral("Ethernet") : QStringLiteral("Virtual Ethernet");
+        return physical
+            ? QCoreApplication::translate("NetworkProvider", "Ethernet")
+            : QCoreApplication::translate("NetworkProvider", "Virtual Ethernet");
     case 24:  // ARPHRD_IEEE1394
-        return QStringLiteral("FireWire");
+        return QCoreApplication::translate("NetworkProvider", "FireWire");
     case 65534: // ARPHRD_NONE — tun, wireguard
-        return QStringLiteral("Tunnel");
+        return QCoreApplication::translate("NetworkProvider", "Tunnel");
     case 512: // ARPHRD_PPP
-        return QStringLiteral("PPP");
+        return QCoreApplication::translate("NetworkProvider", "PPP");
     default:
         break;
     }
     Q_UNUSED(name);
-    return QStringLiteral("Network");
+    return QCoreApplication::translate("NetworkProvider", "Network");
 }
 
 } // namespace
 
-ProcfsNetworkProvider::ProcfsNetworkProvider()
+ProcfsNetworkProvider::ProcfsNetworkProvider(QString root)
+    : m_root(std::move(root))
 {
     enumerateDevices();
 }
 
 bool ProcfsNetworkProvider::isAvailable() const
 {
-    return QFile::exists(QStringLiteral("/proc/net/dev")) && !m_devices.isEmpty();
+    return QFile::exists(m_root + QStringLiteral("/proc/net/dev"))
+        && !m_devices.isEmpty();
 }
 
 void ProcfsNetworkProvider::enumerateDevices()
 {
-    const QDir netDir(QStringLiteral("/sys/class/net"));
+    const QDir netDir(m_root + QStringLiteral("/sys/class/net"));
     const QStringList names =
         netDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
 
@@ -131,10 +137,14 @@ QVector<NetworkSnapshot> ProcfsNetworkProvider::sample()
     if (first) {
         m_elapsed.start();
     }
+    return sampleWithElapsed(elapsedMsec);
+}
 
+QVector<NetworkSnapshot> ProcfsNetworkProvider::sampleWithElapsed(double elapsedMsec)
+{
     QHash<QString, NetworkSnapshot> byName;
 
-    QFile file(QStringLiteral("/proc/net/dev"));
+    QFile file(m_root + QStringLiteral("/proc/net/dev"));
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QTextStream in(&file);
         QString line;
@@ -203,7 +213,8 @@ QVector<NetworkSnapshot> ProcfsNetworkProvider::sample()
         counters.valid = true;
         m_previous.insert(device.id, counters);
 
-        const QString base = QStringLiteral("/sys/class/net/") + device.id;
+        const QString base =
+            m_root + QStringLiteral("/sys/class/net/") + device.id;
         snapshot.state = readSysfsLine(base + QStringLiteral("/operstate"));
         snapshot.mtu = readSysfsLine(base + QStringLiteral("/mtu")).toInt();
         snapshot.duplex = readSysfsLine(base + QStringLiteral("/duplex"));

@@ -28,6 +28,12 @@ public:
 class ProcfsCpuProvider final : public ICpuProvider
 {
 public:
+    // `root` is prepended to every /proc path. Empty means the real
+    // filesystem, which is what the application always uses; the tests point
+    // it at a directory of captured kernel output so the parsing and the
+    // delta arithmetic can be exercised without a live machine underneath.
+    explicit ProcfsCpuProvider(QString root = QString());
+
     bool isAvailable() const override;
     CpuSnapshot sample() override;
 
@@ -37,9 +43,11 @@ private:
         quint64 total = 0;
     };
 
-    static bool parseStat(QVector<CoreTimes> &coresOut,
-                          quint64 &ctxtOut, quint64 &intrOut);
+    bool parseStat(QVector<CoreTimes> &coresOut,
+                   quint64 &ctxtOut, quint64 &intrOut) const;
+    double meanFreqGhzFromCpuinfo() const;
 
+    QString m_root;
     QVector<CoreTimes> m_previous;
     bool m_havePrevious = false;
 };

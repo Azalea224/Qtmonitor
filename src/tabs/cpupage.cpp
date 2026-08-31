@@ -26,7 +26,7 @@ CpuPage::CpuPage(Sampler *sampler, QWidget *parent)
     summaryFont.setPointSize(summaryFont.pointSize() + 4);
     summaryFont.setBold(true);
 
-    m_summary = new QLabel(QStringLiteral("CPU"), content);
+    m_summary = new QLabel(tr("CPU"), content);
     m_summary->setFont(summaryFont);
     m_detail = new QLabel(content);
     m_secondaryLabels.append(m_detail);
@@ -35,7 +35,7 @@ CpuPage::CpuPage(Sampler *sampler, QWidget *parent)
     layout->addWidget(m_summary, 0, 0);
     layout->addWidget(m_detail, 0, 1, Qt::AlignRight);
 
-    auto *coreBox = new QGroupBox(QStringLiteral("Per-core utilization (%)"), content);
+    auto *coreBox = new QGroupBox(tr("Per-core utilization (%)"), content);
     m_coreGrid = new QGridLayout(coreBox);
     m_coreGrid->setSpacing(6);
     coreBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
@@ -100,7 +100,7 @@ QWidget *CpuPage::buildDetailsBox()
 {
     const CpuStaticInfo info = loadCpuStaticInfo();
 
-    auto *box = new QGroupBox(QStringLiteral("Details"), this);
+    auto *box = new QGroupBox(tr("Details"), this);
     // QGridLayout, not QFormLayout: QFormLayout clips word-wrapped labels
     // vertically (broken height-for-width), which truncated long values.
     auto *grid = new QGridLayout(box);
@@ -125,25 +125,25 @@ QWidget *CpuPage::buildDetailsBox()
         }
     };
 
-    addRow(QStringLiteral("Model"), info.modelName);
+    addRow(tr("Model"), info.modelName);
     if (info.maxFreqGhz > 0.0) {
-        addRow(QStringLiteral("Max speed"),
-               QStringLiteral("%1 GHz").arg(info.maxFreqGhz, 0, 'f', 2));
+        addRow(tr("Max speed"),
+               tr("%1 GHz").arg(info.maxFreqGhz, 0, 'f', 2));
     }
-    addRow(QStringLiteral("Driver"), info.driver);
-    addRow(QStringLiteral("Governor"), info.governor, &m_governorValue);
-    addRow(QStringLiteral("Power preference"), info.energyPreference, &m_powerPrefValue);
+    addRow(tr("Driver"), info.driver);
+    addRow(tr("Governor"), info.governor, &m_governorValue);
+    addRow(tr("Power preference"), info.energyPreference, &m_powerPrefValue);
 
     // One row per cache level, keyed "Cache (L1d)" etc.
     for (const auto &cache : info.caches) {
-        addRow(QStringLiteral("Cache (%1)").arg(cache.first), cache.second);
+        addRow(tr("Cache (%1)").arg(cache.first), cache.second);
     }
 
     // Instruction sets chunked across rows so each label stays one line
     constexpr int kPerRow = 5;
     for (int i = 0; i < info.instructionSets.size(); i += kPerRow) {
         const QStringList chunk = info.instructionSets.mid(i, kPerRow);
-        addRow(i == 0 ? QStringLiteral("Instruction sets") : QString(),
+        addRow(i == 0 ? tr("Instruction sets") : QString(),
                chunk.join(QStringLiteral(" · ")));
     }
 
@@ -160,9 +160,9 @@ void CpuPage::onCpuSample(const CpuSnapshot &snapshot)
         m_coreGraphs.at(i)->pushValue(snapshot.perCorePercents.at(i));
     }
 
-    m_summary->setText(QStringLiteral("CPU — %1% overall")
+    m_summary->setText(tr("CPU — %1% overall")
                            .arg(snapshot.totalPercent, 0, 'f', 1));
-    m_detail->setText(QStringLiteral("%1 logical CPUs · %2 GHz")
+    m_detail->setText(tr("%1 logical CPUs · %2 GHz")
                           .arg(snapshot.coreCount)
                           .arg(snapshot.currentFreqGhz, 0, 'f', 2));
 

@@ -16,14 +16,13 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     , m_interval(new QComboBox(this))
     , m_temperature(new QComboBox(this))
     , m_theme(new QComboBox(this))
-    , m_kernelThreads(new QCheckBox(QStringLiteral("Show kernel threads in the "
-                                                   "process list"),
+    , m_kernelThreads(new QCheckBox(tr("Show kernel threads in the process list"),
                                     this))
-    , m_note(new QLabel(QStringLiteral("Graphs keep a 60-second window at every "
-                                       "update speed."),
+    , m_note(new QLabel(tr("Graphs keep a 60-second window at every update "
+                           "speed."),
                         this))
 {
-    setWindowTitle(QStringLiteral("Qtmonitor Settings"));
+    setWindowTitle(tr("Qtmonitor Settings"));
 
     Settings &settings = Settings::instance();
 
@@ -43,20 +42,20 @@ SettingsDialog::SettingsDialog(QWidget *parent)
                             settings.pollIntervalMsec());
     }
     m_interval->setCurrentIndex(m_interval->findData(settings.pollIntervalMsec()));
-    form->addRow(QStringLiteral("Update speed:"), m_interval);
+    form->addRow(tr("Update speed:"), m_interval);
 
-    m_temperature->addItem(QStringLiteral("Celsius (°C)"),
+    m_temperature->addItem(tr("Celsius (°C)"),
                            int(Settings::TemperatureUnit::Celsius));
-    m_temperature->addItem(QStringLiteral("Fahrenheit (°F)"),
+    m_temperature->addItem(tr("Fahrenheit (°F)"),
                            int(Settings::TemperatureUnit::Fahrenheit));
     m_temperature->setCurrentIndex(m_temperature->findData(int(settings.temperatureUnit())));
-    form->addRow(QStringLiteral("Temperature:"), m_temperature);
+    form->addRow(tr("Temperature:"), m_temperature);
 
-    m_theme->addItem(QStringLiteral("Follow the desktop"), int(Settings::Theme::System));
-    m_theme->addItem(QStringLiteral("Light"), int(Settings::Theme::Light));
-    m_theme->addItem(QStringLiteral("Dark"), int(Settings::Theme::Dark));
+    m_theme->addItem(tr("Follow the desktop"), int(Settings::Theme::System));
+    m_theme->addItem(tr("Light"), int(Settings::Theme::Light));
+    m_theme->addItem(tr("Dark"), int(Settings::Theme::Dark));
     m_theme->setCurrentIndex(m_theme->findData(int(settings.theme())));
-    form->addRow(QStringLiteral("Appearance:"), m_theme);
+    form->addRow(tr("Appearance:"), m_theme);
 
     m_kernelThreads->setChecked(settings.showKernelThreads());
     form->addRow(QString(), m_kernelThreads);

@@ -3,19 +3,26 @@
 #include <QFile>
 #include <QTextStream>
 
+#include <utility>
+
 // Fields in /proc/stat per-line: user nice system idle iowait irq softirq
 // steal guest guest_nice. guest* are already included in user/nice, so they
 // are excluded from the total.
 
+ProcfsCpuProvider::ProcfsCpuProvider(QString root)
+    : m_root(std::move(root))
+{
+}
+
 bool ProcfsCpuProvider::isAvailable() const
 {
-    return QFile::exists(QStringLiteral("/proc/stat"));
+    return QFile::exists(m_root + QStringLiteral("/proc/stat"));
 }
 
 bool ProcfsCpuProvider::parseStat(QVector<CoreTimes> &coresOut,
-                                  quint64 &ctxtOut, quint64 &intrOut)
+                                  quint64 &ctxtOut, quint64 &intrOut) const
 {
-    QFile file(QStringLiteral("/proc/stat"));
+    QFile file(m_root + QStringLiteral("/proc/stat"));
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         return false;
     }
@@ -55,11 +62,9 @@ bool ProcfsCpuProvider::parseStat(QVector<CoreTimes> &coresOut,
     return !coresOut.isEmpty();
 }
 
-namespace {
-
-double meanFreqGhzFromCpuinfo()
+double ProcfsCpuProvider::meanFreqGhzFromCpuinfo() const
 {
-    QFile file(QStringLiteral("/proc/cpuinfo"));
+    QFile file(m_root + QStringLiteral("/proc/cpuinfo"));
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         return 0.0;
     }
@@ -78,8 +83,6 @@ double meanFreqGhzFromCpuinfo()
     }
     return count > 0 ? sumMhz / count / 1000.0 : 0.0;
 }
-
-} // namespace
 
 CpuSnapshot ProcfsCpuProvider::sample()
 {

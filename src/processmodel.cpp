@@ -1,5 +1,6 @@
 #include "processmodel.h"
 
+#include <QCoreApplication>
 #include <QSet>
 
 #include "formatting.h"
@@ -34,21 +35,21 @@ QString describeState(QChar state)
 {
     switch (state.toLatin1()) {
     case 'R':
-        return QStringLiteral("Running");
+        return QCoreApplication::translate("ProcessModel", "Running");
     case 'S':
-        return QStringLiteral("Sleeping");
+        return QCoreApplication::translate("ProcessModel", "Sleeping");
     case 'D':
-        return QStringLiteral("Disk wait");
+        return QCoreApplication::translate("ProcessModel", "Disk wait");
     case 'Z':
-        return QStringLiteral("Zombie");
+        return QCoreApplication::translate("ProcessModel", "Zombie");
     case 'T':
-        return QStringLiteral("Stopped");
+        return QCoreApplication::translate("ProcessModel", "Stopped");
     case 't':
-        return QStringLiteral("Traced");
+        return QCoreApplication::translate("ProcessModel", "Traced");
     case 'I':
-        return QStringLiteral("Idle");
+        return QCoreApplication::translate("ProcessModel", "Idle");
     case 'X':
-        return QStringLiteral("Dead");
+        return QCoreApplication::translate("ProcessModel", "Dead");
     default:
         return QString(state);
     }
@@ -83,31 +84,31 @@ QString ProcessModel::columnTitle(Column column)
 {
     switch (column) {
     case Name:
-        return QStringLiteral("Name");
+        return tr("Name");
     case Pid:
-        return QStringLiteral("PID");
+        return tr("PID");
     case User:
-        return QStringLiteral("User");
+        return tr("User");
     case Cpu:
-        return QStringLiteral("CPU");
+        return tr("CPU");
     case Memory:
-        return QStringLiteral("Memory");
+        return tr("Memory");
     case State:
-        return QStringLiteral("State");
+        return tr("State");
     case Nice:
-        return QStringLiteral("Nice");
+        return tr("Nice");
     case Threads:
-        return QStringLiteral("Threads");
+        return tr("Threads");
     case DiskRead:
-        return QStringLiteral("Disk read");
+        return tr("Disk read");
     case DiskWrite:
-        return QStringLiteral("Disk write");
+        return tr("Disk write");
     case GpuCompute:
-        return QStringLiteral("GPU");
+        return tr("GPU");
     case GpuVideo:
-        return QStringLiteral("GPU video");
+        return tr("GPU video");
     case Command:
-        return QStringLiteral("Command line");
+        return tr("Command line");
     case ColumnCount:
         break;
     }
@@ -179,7 +180,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
     if (role == Qt::ToolTipRole) {
         // Kernel threads have no cmdline, so fall back to something useful.
         return p.command.isEmpty()
-            ? QStringLiteral("%1 (kernel thread, PID %2)").arg(p.name).arg(p.pid)
+            ? tr("%1 (kernel thread, PID %2)").arg(p.name).arg(p.pid)
             : p.command;
     }
 

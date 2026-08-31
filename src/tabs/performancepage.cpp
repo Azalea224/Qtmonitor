@@ -107,9 +107,9 @@ PerformancePage::PerformancePage(Sampler *sampler, QWidget *parent)
     , m_nav(new QListWidget(this))
     , m_stack(new QStackedWidget(this))
 {
-    m_cpuRow = addResource(QStringLiteral("CPU"), ResourceKind::Cpu,
+    m_cpuRow = addResource(tr("CPU"), ResourceKind::Cpu,
                            new CpuPage(sampler, this));
-    m_memRow = addResource(QStringLiteral("Memory"), ResourceKind::Memory,
+    m_memRow = addResource(tr("Memory"), ResourceKind::Memory,
                            new MemoryPage(sampler, this));
     addGpuResources(sampler);
     addDiskResources(sampler);
@@ -151,8 +151,8 @@ void PerformancePage::addGpuResources(Sampler *sampler)
         // The sidebar is 170-220px wide, so the row carries a short label and
         // the page header carries the model name. Numbering only appears when
         // there is more than one card to tell apart.
-        const QString title = gpus.size() > 1 ? QStringLiteral("GPU %1").arg(i)
-                                              : QStringLiteral("GPU");
+        const QString title = gpus.size() > 1 ? tr("GPU %1").arg(i)
+                                              : tr("GPU");
         m_gpuRows.insert(device.id,
                          addResource(title, ResourceKind::Gpu,
                                      new GpuPage(sampler, device, this)));

@@ -262,9 +262,9 @@ void HistoryGraph::paintEvent(QPaintEvent *event)
     painter.setPen(dimColor);
     painter.drawText(QRectF(plot.left(), plot.bottom() + 2, 80, axisMetrics.height()),
                      Qt::AlignLeft | Qt::AlignTop,
-                     QStringLiteral("%1s ago").arg(m_historySeconds));
+                     tr("%1s ago").arg(m_historySeconds));
     painter.drawText(QRectF(plot.right() - 80, plot.bottom() + 2, 80, axisMetrics.height()),
-                     Qt::AlignRight | Qt::AlignTop, QStringLiteral("now"));
+                     Qt::AlignRight | Qt::AlignTop, tr("now"));
 
     // Series, newest point at the right edge
     const double stepX = plot.width() / (m_capacity - 1.0);

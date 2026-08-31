@@ -1,0 +1,24 @@
+processor	: 0
+vendor_id	: AuthenticAMD
+model name	: Fixture CPU @ 3.00GHz
+cpu MHz		: 2400.000
+flags		: fpu vme de pse tsc msr sse sse2 avx avx2
+
+processor	: 1
+vendor_id	: AuthenticAMD
+model name	: Fixture CPU @ 3.00GHz
+cpu MHz		: 3200.000
+flags		: fpu vme de pse tsc msr sse sse2 avx avx2
+
+processor	: 2
+vendor_id	: AuthenticAMD
+model name	: Fixture CPU @ 3.00GHz
+cpu MHz		: 3600.000
+flags		: fpu vme de pse tsc msr sse sse2 avx avx2
+
+processor	: 3
+vendor_id	: AuthenticAMD
+model name	: Fixture CPU @ 3.00GHz
+cpu MHz		: 2800.000
+flags		: fpu vme de pse tsc msr sse sse2 avx avx2
+

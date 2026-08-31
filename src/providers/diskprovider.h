@@ -71,11 +71,21 @@ public:
 class ProcfsDiskProvider final : public IDiskProvider
 {
 public:
-    ProcfsDiskProvider();
+    // `root` is prepended to every /proc and /sys path; empty is the real
+    // filesystem. See ProcfsCpuProvider for why this exists.
+    explicit ProcfsDiskProvider(QString root = QString());
 
     bool isAvailable() const override;
     QVector<DiskDeviceInfo> devices() const override { return m_devices; }
     QVector<DiskSnapshot> sample() override;
+
+    // sample() with the interval supplied instead of measured. Rates are
+    // derived by dividing a counter delta by elapsed time, so a test that
+    // used the wall clock would be asserting against however long the test
+    // process happened to be scheduled out for. Passing 0 reproduces the
+    // first-sample case, which must report no rate at all rather than
+    // deriving one from boot-time totals.
+    QVector<DiskSnapshot> sampleWithElapsed(double elapsedMsec);
 
 private:
     // Raw counters as last read, for the delta.
@@ -91,6 +101,7 @@ private:
     void enumerateDevices();
     void refreshMounts();
 
+    QString m_root;
     QVector<DiskDeviceInfo> m_devices;
     QHash<QString, Counters> m_previous;
     // Keyed by disk id, so a page only shows the filesystems on its own disk.

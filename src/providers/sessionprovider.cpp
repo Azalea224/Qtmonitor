@@ -1,5 +1,6 @@
 #include "sessionprovider.h"
 
+#include <QCoreApplication>
 #include <QDBusArgument>
 #include <QDBusConnection>
 #include <QDBusMessage>
@@ -105,7 +106,8 @@ QString SessionProvider::describe(const QVector<UserSession> &sessions)
     if (sessions.isEmpty()) {
         // A user with processes but no session: a system account running
         // daemons, which is normal and worth naming rather than blanking.
-        return QStringLiteral("No login session");
+        return QCoreApplication::translate("SessionProvider",
+                                           "No login session");
     }
 
     // The graphical or active session is the one worth summarising; a user
@@ -130,13 +132,15 @@ QString SessionProvider::describe(const QVector<UserSession> &sessions)
         parts << best->seat;
     }
     if (best->remote && !best->remoteHost.isEmpty()) {
-        parts << QStringLiteral("from %1").arg(best->remoteHost);
+        parts << QCoreApplication::translate("SessionProvider", "from %1")
+                     .arg(best->remoteHost);
     }
     if (!best->state.isEmpty()) {
         parts << best->state;
     }
     if (sessions.size() > 1) {
-        parts << QStringLiteral("%1 sessions").arg(sessions.size());
+        parts << QCoreApplication::translate("SessionProvider", "%n session(s)",
+                                             nullptr, sessions.size());
     }
     return parts.join(QStringLiteral(" · "));
 }

@@ -1,5 +1,6 @@
 #include "startuppage.h"
 
+#include <QCoreApplication>
 #include <QEvent>
 #include <QHBoxLayout>
 #include <QHeaderView>
@@ -20,9 +21,9 @@ QString describeKind(StartupEntry::Kind kind)
 {
     switch (kind) {
     case StartupEntry::Kind::XdgAutostart:
-        return QStringLiteral("Autostart");
+        return QCoreApplication::translate("StartupModel", "Autostart");
     case StartupEntry::Kind::SystemdUser:
-        return QStringLiteral("User service");
+        return QCoreApplication::translate("StartupModel", "User service");
     }
     return {};
 }
@@ -31,13 +32,13 @@ QString describeStatus(const StartupEntry &entry)
 {
     switch (entry.status) {
     case StartupEntry::Status::Enabled:
-        return QStringLiteral("Enabled");
+        return QCoreApplication::translate("StartupModel", "Enabled");
     case StartupEntry::Status::Disabled:
-        return QStringLiteral("Disabled");
+        return QCoreApplication::translate("StartupModel", "Disabled");
     case StartupEntry::Status::OtherDesktop:
-        return QStringLiteral("Other desktop");
+        return QCoreApplication::translate("StartupModel", "Other desktop");
     case StartupEntry::Status::Missing:
-        return QStringLiteral("Program missing");
+        return QCoreApplication::translate("StartupModel", "Program missing");
     }
     return {};
 }
@@ -82,13 +83,13 @@ QVariant StartupModel::headerData(int section, Qt::Orientation orientation,
     }
     switch (static_cast<Column>(section)) {
     case Name:
-        return QStringLiteral("Name");
+        return tr("Name");
     case Kind:
-        return QStringLiteral("Type");
+        return tr("Type");
     case Status:
-        return QStringLiteral("Status");
+        return tr("Status");
     case Detail:
-        return QStringLiteral("Details");
+        return tr("Details");
     case ColumnCount:
         break;
     }
@@ -114,7 +115,7 @@ QVariant StartupModel::data(const QModelIndex &index, int role) const
             tip += QStringLiteral("\n%1").arg(entry.command);
         }
         if (entry.status == StartupEntry::Status::OtherDesktop) {
-            tip += QStringLiteral("\nRuns only on: %1").arg(entry.desktopRestriction);
+            tip += tr("\nRuns only on: %1").arg(entry.desktopRestriction);
         }
         return tip;
     }
@@ -132,7 +133,7 @@ QVariant StartupModel::data(const QModelIndex &index, int role) const
         return describeStatus(entry);
     case Detail:
         if (entry.status == StartupEntry::Status::OtherDesktop) {
-            return QStringLiteral("Only on %1").arg(entry.desktopRestriction);
+            return tr("Only on %1").arg(entry.desktopRestriction);
         }
         if (!entry.description.isEmpty()) {
             return entry.description;
@@ -150,7 +151,7 @@ StartupPage::StartupPage(QWidget *parent)
     , m_proxy(new QSortFilterProxyModel(this))
     , m_view(new QTreeView(this))
     , m_search(new QLineEdit(this))
-    , m_toggleButton(new QPushButton(QStringLiteral("Enable"), this))
+    , m_toggleButton(new QPushButton(tr("Enable"), this))
     , m_summary(new QLabel(this))
 {
     m_proxy->setSourceModel(m_model);
@@ -163,7 +164,7 @@ StartupPage::StartupPage(QWidget *parent)
     layout->setSpacing(8);
 
     auto *toolbar = new QHBoxLayout;
-    m_search->setPlaceholderText(QStringLiteral("Search startup items"));
+    m_search->setPlaceholderText(tr("Search startup items"));
     m_search->setClearButtonEnabled(true);
     toolbar->addWidget(m_search, 1);
     toolbar->addWidget(m_toggleButton);
@@ -236,12 +237,12 @@ void StartupPage::updateButton()
     const StartupEntry *entry = selectedEntry();
     if (!entry || !entry->toggleable()) {
         m_toggleButton->setEnabled(false);
-        m_toggleButton->setText(QStringLiteral("Enable"));
+        m_toggleButton->setText(tr("Enable"));
         return;
     }
     m_toggleButton->setEnabled(true);
-    m_toggleButton->setText(entry->isEnabled() ? QStringLiteral("Disable")
-                                               : QStringLiteral("Enable"));
+    m_toggleButton->setText(entry->isEnabled() ? tr("Disable")
+                                               : tr("Enable"));
 }
 
 void StartupPage::refresh()
@@ -269,17 +270,17 @@ void StartupPage::refresh()
         }
     }
 
-    QString text = QStringLiteral("%1 items  ·  %2 enabled")
-                       .arg(entries.size())
-                       .arg(enabled);
+    QString text = tr("%n item(s)", "", entries.size())
+        + QStringLiteral("  ·  ") + tr("%1 enabled").arg(enabled);
     if (otherDesktop > 0) {
         // Worth calling out on a non-Plasma, non-GNOME desktop, where a good
         // number of packaged autostart entries simply never fire.
         const QStringList desktops = StartupProvider::currentDesktops();
-        text += QStringLiteral("  ·  %1 for other desktops (this is %2)")
-                    .arg(otherDesktop)
-                    .arg(desktops.isEmpty() ? QStringLiteral("unset")
-                                            : desktops.join(QLatin1Char('/')));
+        text += QStringLiteral("  ·  ")
+            + tr("%1 for other desktops (this is %2)")
+                  .arg(otherDesktop)
+                  .arg(desktops.isEmpty() ? tr("unset")
+                                          : desktops.join(QLatin1Char('/')));
     }
     m_summary->setText(text);
 
@@ -312,11 +313,10 @@ void StartupPage::toggleSelected()
     if (!error.isEmpty()) {
         QMessageBox::warning(
             this,
-            enable ? QStringLiteral("Could not enable") : QStringLiteral("Could not disable"),
-            QStringLiteral("%1 could not be %2.\n\n%3")
-                .arg(target.name,
-                     enable ? QStringLiteral("enabled") : QStringLiteral("disabled"),
-                     error));
+            enable ? tr("Could not enable") : tr("Could not disable"),
+            (enable ? tr("%1 could not be enabled.\n\n%2")
+                    : tr("%1 could not be disabled.\n\n%2"))
+                .arg(target.name, error));
     }
 
     // Re-scan either way: on success it shows the new state, and on failure

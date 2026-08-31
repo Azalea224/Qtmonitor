@@ -158,7 +158,7 @@ QVector<StartupEntry> StartupProvider::scanXdgAutostart() const
             } else if (!notShowIn.isEmpty() && matchesHere(notShowIn)) {
                 entry.status = StartupEntry::Status::OtherDesktop;
                 entry.desktopRestriction =
-                    QStringLiteral("all except ") + notShowIn.join(QStringLiteral(", "));
+                    tr("all except %1").arg(notShowIn.join(QStringLiteral(", ")));
             } else if (!desktop.tryExec()) {
                 entry.status = StartupEntry::Status::Missing;
             } else {
@@ -303,7 +303,7 @@ QString StartupProvider::setXdgEnabled(const StartupEntry &entry, bool enabled) 
     const QString userPath = userDir + QLatin1Char('/') + entry.id;
 
     if (!QDir().mkpath(userDir)) {
-        return QStringLiteral("Could not create %1.").arg(userDir);
+        return tr("Could not create %1.").arg(userDir);
     }
 
     // A system-wide entry is never edited in place — that would need root and
@@ -311,7 +311,7 @@ QString StartupProvider::setXdgEnabled(const StartupEntry &entry, bool enabled) 
     // user-level file of the same name, which shadows it entirely.
     if (!QFile::exists(userPath)) {
         if (!QFile::copy(entry.sourcePath, userPath)) {
-            return QStringLiteral("Could not copy %1 to %2.")
+            return tr("Could not copy %1 to %2.")
                 .arg(entry.sourcePath, userPath);
         }
         // QFile::copy preserves the source's read-only permissions.
@@ -330,7 +330,7 @@ QString StartupProvider::setXdgEnabled(const StartupEntry &entry, bool enabled) 
     group.sync();
 
     if (!group.config()->isConfigWritable(true)) {
-        return QStringLiteral("%1 is not writable.").arg(userPath);
+        return tr("%1 is not writable.").arg(userPath);
     }
     return {};
 }
@@ -338,7 +338,7 @@ QString StartupProvider::setXdgEnabled(const StartupEntry &entry, bool enabled) 
 QString StartupProvider::setSystemdEnabled(const StartupEntry &entry, bool enabled) const
 {
     if (!optionaltools::isAvailable(optionaltools::Tool::Systemctl)) {
-        return QStringLiteral("systemctl is not installed.");
+        return tr("systemctl is not installed.");
     }
 
     int exitCode = -1;
@@ -351,7 +351,7 @@ QString StartupProvider::setSystemdEnabled(const StartupEntry &entry, bool enabl
 
     if (exitCode != 0) {
         return errorOutput.isEmpty()
-            ? QStringLiteral("systemctl %1 %2 failed.")
+            ? tr("systemctl %1 %2 failed.")
                   .arg(enabled ? QStringLiteral("enable") : QStringLiteral("disable"),
                        entry.id)
             : errorOutput;
@@ -367,5 +367,5 @@ QString StartupProvider::setEnabled(const StartupEntry &entry, bool enabled) con
     case StartupEntry::Kind::SystemdUser:
         return setSystemdEnabled(entry, enabled);
     }
-    return QStringLiteral("Unknown startup entry type.");
+    return tr("Unknown startup entry type.");
 }

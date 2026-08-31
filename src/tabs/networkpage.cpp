@@ -57,11 +57,11 @@ NetworkPage::NetworkPage(Sampler *sampler, const NetworkDeviceInfo &device,
     // axis follows the data instead and labels itself in absolute units, so
     // nothing is hidden by the rescale.
     m_throughputGraph =
-        new HistoryGraph(QStringLiteral("Throughput"), kHistorySeconds, content);
+        new HistoryGraph(tr("Throughput"), kHistorySeconds, content);
     m_throughputGraph->setAxisFormat(HistoryGraph::AxisFormat::ByteRate);
     m_throughputGraph->setAutoScale(true, 64.0 * 1024.0);
-    m_receiveSeries = m_throughputGraph->addSeries(QStringLiteral("Receive"), QColor());
-    m_sendSeries = m_throughputGraph->addSeries(QStringLiteral("Send"), QColor());
+    m_receiveSeries = m_throughputGraph->addSeries(tr("Receive"), QColor());
+    m_sendSeries = m_throughputGraph->addSeries(tr("Send"), QColor());
     layout->addWidget(m_throughputGraph, 1, 0, 1, 2);
     layout->setRowStretch(1, 1);
 
@@ -103,34 +103,34 @@ void NetworkPage::addDetailRow(QGridLayout *grid, int &row, const QString &key,
 
 QWidget *NetworkPage::buildDetailsBox()
 {
-    auto *box = new QGroupBox(QStringLiteral("Details"), this);
+    auto *box = new QGroupBox(tr("Details"), this);
     auto *grid = new QGridLayout(box);
     grid->setContentsMargins(12, 8, 12, 8);
     grid->setColumnStretch(1, 1);
 
     int row = 0;
-    addDetailRow(grid, row, QStringLiteral("Interface"), m_device.id);
-    addDetailRow(grid, row, QStringLiteral("Type"), m_device.kind);
-    addDetailRow(grid, row, QStringLiteral("Driver"), m_device.driver);
-    addDetailRow(grid, row, QStringLiteral("Bus address"), m_device.busPath);
+    addDetailRow(grid, row, tr("Interface"), m_device.id);
+    addDetailRow(grid, row, tr("Type"), m_device.kind);
+    addDetailRow(grid, row, tr("Driver"), m_device.driver);
+    addDetailRow(grid, row, tr("Bus address"), m_device.busPath);
     // Live values, refreshed each tick — a cable can be pulled and an address
     // can be handed back by DHCP without the app restarting.
-    addDetailRow(grid, row, QStringLiteral("State"), QStringLiteral("—"), &m_stateValue);
-    addDetailRow(grid, row, QStringLiteral("Link speed"), QStringLiteral("—"),
+    addDetailRow(grid, row, tr("State"), QStringLiteral("—"), &m_stateValue);
+    addDetailRow(grid, row, tr("Link speed"), QStringLiteral("—"),
                  &m_speedValue);
     // One row per address family rather than one packed line: every detail
     // value here has to stay a single short line, because a word-wrapped
     // QLabel is clipped to one line inside a QGridLayout.
-    addDetailRow(grid, row, QStringLiteral("IPv4"), QStringLiteral("—"), &m_ipv4Value);
-    addDetailRow(grid, row, QStringLiteral("IPv6"), QStringLiteral("—"), &m_ipv6Value);
-    addDetailRow(grid, row, QStringLiteral("MAC"), QStringLiteral("—"), &m_macValue);
-    addDetailRow(grid, row, QStringLiteral("Receiving"), QStringLiteral("—"),
+    addDetailRow(grid, row, tr("IPv4"), QStringLiteral("—"), &m_ipv4Value);
+    addDetailRow(grid, row, tr("IPv6"), QStringLiteral("—"), &m_ipv6Value);
+    addDetailRow(grid, row, tr("MAC"), QStringLiteral("—"), &m_macValue);
+    addDetailRow(grid, row, tr("Receiving"), QStringLiteral("—"),
                  &m_receiveValue);
-    addDetailRow(grid, row, QStringLiteral("Sending"), QStringLiteral("—"),
+    addDetailRow(grid, row, tr("Sending"), QStringLiteral("—"),
                  &m_sendValue);
-    addDetailRow(grid, row, QStringLiteral("Since boot"), QStringLiteral("—"),
+    addDetailRow(grid, row, tr("Since boot"), QStringLiteral("—"),
                  &m_totalsValue);
-    addDetailRow(grid, row, QStringLiteral("Errors / drops"), QStringLiteral("—"),
+    addDetailRow(grid, row, tr("Errors / drops"), QStringLiteral("—"),
                  &m_errorsValue);
 
     return box;
@@ -169,21 +169,21 @@ void NetworkPage::onNetworkSample(const QVector<NetworkSnapshot> &snapshots)
         m_throughputGraph->pushValue(m_receiveSeries, snapshot.receiveBytesPerSec);
         m_throughputGraph->pushValue(m_sendSeries, snapshot.sendBytesPerSec);
 
-        m_summary->setText(QStringLiteral("%1 — %2")
+        m_summary->setText(tr("%1 — %2")
                                .arg(m_device.name,
-                                    snapshot.up ? QStringLiteral("connected")
-                                                : QStringLiteral("not connected")));
-        m_detail->setText(QStringLiteral("%1 down · %2 up")
+                                    snapshot.up ? tr("connected")
+                                                : tr("not connected")));
+        m_detail->setText(tr("%1 down · %2 up")
                               .arg(formatting::byteRate(snapshot.receiveBytesPerSec),
                                    formatting::byteRate(snapshot.sendBytesPerSec)));
 
-        QString state = snapshot.state.isEmpty() ? QStringLiteral("unknown")
+        QString state = snapshot.state.isEmpty() ? tr("unknown")
                                                  : snapshot.state;
         if (!snapshot.duplex.isEmpty()) {
-            state += QStringLiteral(" · %1 duplex").arg(snapshot.duplex);
+            state += tr(" · %1 duplex").arg(snapshot.duplex);
         }
         if (snapshot.mtu > 0) {
-            state += QStringLiteral(" · MTU %1").arg(snapshot.mtu);
+            state += tr(" · MTU %1").arg(snapshot.mtu);
         }
         m_stateValue->setText(state);
 
@@ -208,11 +208,11 @@ void NetworkPage::onNetworkSample(const QVector<NetworkSnapshot> &snapshots)
         m_receiveValue->setText(formatting::byteRate(snapshot.receiveBytesPerSec));
         m_sendValue->setText(formatting::byteRate(snapshot.sendBytesPerSec));
         m_totalsValue->setText(
-            QStringLiteral("%1 received · %2 sent")
+            tr("%1 received · %2 sent")
                 .arg(formatting::bytes(snapshot.receiveTotalBytes),
                      formatting::bytes(snapshot.sendTotalBytes)));
         m_errorsValue->setText(
-            QStringLiteral("%1 / %2 in · %3 / %4 out")
+            tr("%1 / %2 in · %3 / %4 out")
                 .arg(snapshot.receiveErrors)
                 .arg(snapshot.receiveDrops)
                 .arg(snapshot.sendErrors)

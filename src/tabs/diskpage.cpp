@@ -39,11 +39,11 @@ DiskPage::DiskPage(Sampler *sampler, const DiskDeviceInfo &device, QWidget *pare
     // marketing, and the real limit depends on the access pattern — so the
     // axis follows the data and labels itself in absolute units.
     m_throughputGraph =
-        new HistoryGraph(QStringLiteral("Disk throughput"), kHistorySeconds, content);
+        new HistoryGraph(tr("Disk throughput"), kHistorySeconds, content);
     m_throughputGraph->setAxisFormat(HistoryGraph::AxisFormat::ByteRate);
     m_throughputGraph->setAutoScale(true, 1024.0 * 1024.0);
-    m_readSeries = m_throughputGraph->addSeries(QStringLiteral("Read"), QColor());
-    m_writeSeries = m_throughputGraph->addSeries(QStringLiteral("Write"), QColor());
+    m_readSeries = m_throughputGraph->addSeries(tr("Read"), QColor());
+    m_writeSeries = m_throughputGraph->addSeries(tr("Write"), QColor());
     layout->addWidget(m_throughputGraph, 1, 0, 1, 2);
     layout->setRowStretch(1, 1);
 
@@ -51,10 +51,10 @@ DiskPage::DiskPage(Sampler *sampler, const DiskDeviceInfo &device, QWidget *pare
     // fixed 0..100 axis. It answers a different question: not how much data
     // moved, but how much of the time the device had work outstanding.
     m_activeGraph =
-        new HistoryGraph(QStringLiteral("Active time"), kHistorySeconds, content);
+        new HistoryGraph(tr("Active time"), kHistorySeconds, content);
     m_activeGraph->setYUnit(QStringLiteral("%"));
     m_activeGraph->setYMax(100.0);
-    m_activeSeries = m_activeGraph->addSeries(QStringLiteral("Active"), QColor());
+    m_activeSeries = m_activeGraph->addSeries(tr("Active"), QColor());
     layout->addWidget(m_activeGraph, 2, 0, 1, 2);
     layout->setRowStretch(2, 1);
 
@@ -96,7 +96,7 @@ void DiskPage::addDetailRow(QGridLayout *grid, int &row, const QString &key,
 
 QWidget *DiskPage::buildDetailsBox()
 {
-    auto *box = new QGroupBox(QStringLiteral("Details"), this);
+    auto *box = new QGroupBox(tr("Details"), this);
     // QGridLayout with single-line values: a word-wrapped QLabel gets
     // vertically clipped to one line inside both QGridLayout and QFormLayout.
     auto *grid = new QGridLayout(box);
@@ -104,18 +104,18 @@ QWidget *DiskPage::buildDetailsBox()
     grid->setColumnStretch(1, 1);
 
     int row = 0;
-    addDetailRow(grid, row, QStringLiteral("Device"),
+    addDetailRow(grid, row, tr("Device"),
                  QStringLiteral("/dev/") + m_device.id);
-    addDetailRow(grid, row, QStringLiteral("Type"), m_device.kind);
-    addDetailRow(grid, row, QStringLiteral("Capacity"),
+    addDetailRow(grid, row, tr("Type"), m_device.kind);
+    addDetailRow(grid, row, tr("Capacity"),
                  formatting::bytes(m_device.sizeBytes));
-    addDetailRow(grid, row, QStringLiteral("Bus address"), m_device.busPath);
+    addDetailRow(grid, row, tr("Bus address"), m_device.busPath);
     // Live values, refreshed each tick.
-    addDetailRow(grid, row, QStringLiteral("Read speed"), QStringLiteral("—"),
+    addDetailRow(grid, row, tr("Read speed"), QStringLiteral("—"),
                  &m_readValue);
-    addDetailRow(grid, row, QStringLiteral("Write speed"), QStringLiteral("—"),
+    addDetailRow(grid, row, tr("Write speed"), QStringLiteral("—"),
                  &m_writeValue);
-    addDetailRow(grid, row, QStringLiteral("Average queue"), QStringLiteral("—"),
+    addDetailRow(grid, row, tr("Average queue"), QStringLiteral("—"),
                  &m_queueValue);
 
     return box;
@@ -123,7 +123,7 @@ QWidget *DiskPage::buildDetailsBox()
 
 QWidget *DiskPage::buildFilesystemsBox()
 {
-    m_filesystemsBox = new QGroupBox(QStringLiteral("Filesystems"), this);
+    m_filesystemsBox = new QGroupBox(tr("Filesystems"), this);
     m_filesystemsGrid = new QGridLayout(m_filesystemsBox);
     m_filesystemsGrid->setContentsMargins(12, 8, 12, 8);
     m_filesystemsGrid->setColumnStretch(1, 1);
@@ -167,10 +167,10 @@ void DiskPage::updateFilesystems(const QVector<DiskMountInfo> &mounts)
             // inside a QGridLayout, but a tooltip wraps freely.
             QString key = mount.mountPoints.first();
             if (mount.mountPoints.size() > 1) {
-                key += QStringLiteral(" (+%1)").arg(mount.mountPoints.size() - 1);
+                key += tr(" (+%1)").arg(mount.mountPoints.size() - 1);
             }
             auto *keyLabel = new QLabel(key, m_filesystemsBox);
-            keyLabel->setToolTip(QStringLiteral("%1 mounted at\n%2")
+            keyLabel->setToolTip(tr("%1 mounted at\n%2")
                                      .arg(mount.device,
                                           mount.mountPoints.join(QLatin1Char('\n'))));
             auto *valueLabel = new QLabel(QStringLiteral("—"), m_filesystemsBox);
@@ -193,7 +193,7 @@ void DiskPage::updateFilesystems(const QVector<DiskMountInfo> &mounts)
             ? 100.0 * mount.usedBytes / mount.totalBytes
             : 0.0;
         m_filesystemValues.at(i)->setText(
-            QStringLiteral("%1 — %2 of %3 used (%4%)")
+            tr("%1 — %2 of %3 used (%4%)")
                 .arg(mount.filesystem, formatting::bytes(mount.usedBytes),
                      formatting::bytes(mount.totalBytes),
                      QString::number(percent, 'f', 0)));
@@ -237,17 +237,17 @@ void DiskPage::onDiskSample(const QVector<DiskSnapshot> &snapshots)
         m_throughputGraph->pushValue(m_writeSeries, snapshot.writeBytesPerSec);
         m_activeGraph->pushValue(m_activeSeries, snapshot.activePercent);
 
-        m_summary->setText(QStringLiteral("%1 — %2% active")
+        m_summary->setText(tr("%1 — %2% active")
                                .arg(m_device.name,
                                     QString::number(snapshot.activePercent, 'f', 1)));
         m_detail->setText(
-            QStringLiteral("%1 read · %2 write")
+            tr("%1 read · %2 write")
                 .arg(formatting::byteRate(snapshot.readBytesPerSec),
                      formatting::byteRate(snapshot.writeBytesPerSec)));
 
         m_readValue->setText(formatting::byteRate(snapshot.readBytesPerSec));
         m_writeValue->setText(formatting::byteRate(snapshot.writeBytesPerSec));
-        m_queueValue->setText(QStringLiteral("%1 requests")
+        m_queueValue->setText(tr("%1 requests")
                                   .arg(snapshot.avgQueueLength, 0, 'f', 2));
 
         updateFilesystems(snapshot.mounts);

@@ -5,8 +5,8 @@ pkgdesc="A Qt6/KF6 resource and task monitor for Linux"
 arch=('x86_64')
 url="https://github.com/Azalea224/Qtmonitor"
 license=('GPL-3.0-only')
-depends=('qt6-base' 'kauth' 'kconfig' 'kcoreaddons' 'hicolor-icon-theme')
-makedepends=('cmake' 'ninja' 'git')
+depends=('qt6-base' 'kauth' 'kconfig' 'hicolor-icon-theme')
+makedepends=('cmake' 'ninja' 'git' 'qt6-tools')
 optdepends=('nvidia-utils: NVIDIA GPU metrics via nvidia-smi'
             'hwdata: GPU model names from pci.ids'
             'qt6-wayland: native Wayland session support')
@@ -31,8 +31,6 @@ build() {
 
 package() {
 	DESTDIR="$pkgdir" cmake --install build
-	install -Dm644 "$srcdir/$pkgname/src/icons/qtmonitor.svg" \
-		"$pkgdir/usr/share/icons/hicolor/scalable/apps/qtmonitor.svg"
 	install -Dm644 "$srcdir/$pkgname/LICENSE" \
 		"$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }

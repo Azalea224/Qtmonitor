@@ -55,11 +55,11 @@ GpuPage::GpuPage(Sampler *sampler, const GpuDeviceInfo &device, QWidget *parent)
         layout->addWidget(m_detail, 0, 1, Qt::AlignRight);
 
         m_utilizationGraph =
-            new HistoryGraph(QStringLiteral("GPU utilization"), kHistorySeconds, content);
+            new HistoryGraph(tr("GPU utilization"), kHistorySeconds, content);
         m_utilizationGraph->setYUnit(QStringLiteral("%"));
         m_utilizationGraph->setYMax(100.0);
-        m_busySeries = m_utilizationGraph->addSeries(QStringLiteral("GPU"), QColor());
-        m_videoSeries = m_utilizationGraph->addSeries(QStringLiteral("Video"), QColor());
+        m_busySeries = m_utilizationGraph->addSeries(tr("GPU"), QColor());
+        m_videoSeries = m_utilizationGraph->addSeries(tr("Video"), QColor());
         layout->addWidget(m_utilizationGraph, 1, 0, 1, 2);
         layout->setRowStretch(1, 1);
 
@@ -67,14 +67,14 @@ GpuPage::GpuPage(Sampler *sampler, const GpuDeviceInfo &device, QWidget *parent)
         // Integrated GPUs borrow system RAM and report no VRAM total, so the
         // memory chart only appears where there is a real budget to plot.
         if (m_device.memTotalBytes > 0) {
-            m_memoryGraph = new HistoryGraph(QStringLiteral("GPU memory"),
+            m_memoryGraph = new HistoryGraph(tr("GPU memory"),
                                              kHistorySeconds, content);
             const bool smallBudget = m_device.memTotalBytes < 2147483648ull;
             m_memoryDivisor = smallBudget ? 1048576.0 : 1073741824.0;
             m_memoryGraph->setYUnit(smallBudget ? QStringLiteral("MiB")
                                                 : QStringLiteral("GiB"));
             m_memoryGraph->setYMax(m_device.memTotalBytes / m_memoryDivisor);
-            m_vramSeries = m_memoryGraph->addSeries(QStringLiteral("VRAM"), QColor());
+            m_vramSeries = m_memoryGraph->addSeries(tr("VRAM"), QColor());
             layout->addWidget(m_memoryGraph, nextRow, 0, 1, 2);
             layout->setRowStretch(nextRow, 1);
             ++nextRow;
@@ -141,7 +141,7 @@ void GpuPage::addDetailRow(QGridLayout *grid, int &row, const QString &key,
 
 QWidget *GpuPage::buildDetailsBox()
 {
-    auto *box = new QGroupBox(QStringLiteral("Details"), this);
+    auto *box = new QGroupBox(tr("Details"), this);
     // QGridLayout, not QFormLayout, and every value a single short line:
     // wrapped labels get vertically clipped inside both.
     auto *grid = new QGridLayout(box);
@@ -149,19 +149,19 @@ QWidget *GpuPage::buildDetailsBox()
     grid->setColumnStretch(1, 1);
 
     int row = 0;
-    addDetailRow(grid, row, QStringLiteral("Driver"), m_device.driver);
-    addDetailRow(grid, row, QStringLiteral("PCI address"), m_device.id);
+    addDetailRow(grid, row, tr("Driver"), m_device.driver);
+    addDetailRow(grid, row, tr("PCI address"), m_device.id);
     if (m_device.memTotalBytes > 0) {
-        addDetailRow(grid, row, QStringLiteral("Memory"),
+        addDetailRow(grid, row, tr("Memory"),
                      formatting::bytes(m_device.memTotalBytes));
     }
     if (m_device.metricsAvailable) {
         // Live values, refreshed each tick.
-        addDetailRow(grid, row, QStringLiteral("Temperature"), QStringLiteral("—"),
+        addDetailRow(grid, row, tr("Temperature"), QStringLiteral("—"),
                      &m_temperatureValue);
-        addDetailRow(grid, row, QStringLiteral("Power draw"), QStringLiteral("—"),
+        addDetailRow(grid, row, tr("Power draw"), QStringLiteral("—"),
                      &m_powerValue);
-        addDetailRow(grid, row, QStringLiteral("Clock"), QStringLiteral("—"),
+        addDetailRow(grid, row, tr("Clock"), QStringLiteral("—"),
                      &m_clockValue);
     }
 
@@ -214,19 +214,19 @@ void GpuPage::onGpuSample(const QVector<GpuSnapshot> &snapshots)
         m_utilizationGraph->pushValue(m_busySeries, qMax(0.0, snapshot.busyPercent));
         m_utilizationGraph->pushValue(m_videoSeries, qMax(0.0, snapshot.videoPercent));
 
-        m_summary->setText(QStringLiteral("%1 — %2")
+        m_summary->setText(tr("%1 — %2")
                                .arg(m_device.name,
                                     formatOptional(snapshot.busyPercent,
-                                                   QStringLiteral("% utilization"), 1)));
+                                                   tr("% utilization"), 1)));
         m_detail->setText(
-            formatOptional(snapshot.videoPercent, QStringLiteral("% video engine"), 1));
+            formatOptional(snapshot.videoPercent, tr("% video engine"), 1));
 
         if (m_memoryGraph) {
             m_memoryGraph->pushValue(m_vramSeries,
                                      snapshot.memUsedBytes / m_memoryDivisor);
             const quint64 total = snapshot.memTotalBytes > 0 ? snapshot.memTotalBytes
                                                              : m_device.memTotalBytes;
-            m_memoryDetail->setText(QStringLiteral("Memory: %1 / %2")
+            m_memoryDetail->setText(tr("Memory: %1 / %2")
                                         .arg(formatting::bytes(snapshot.memUsedBytes),
                                              formatting::bytes(total)));
         }

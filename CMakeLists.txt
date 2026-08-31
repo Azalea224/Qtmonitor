@@ -15,10 +15,19 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # whose runtime files are explicitly documented as unparseable; Network is
 # used only for QNetworkInterface, to read interface addresses without
 # hand-rolling a netlink client.
-find_package(Qt6 REQUIRED COMPONENTS Widgets DBus Network)
+# LinguistTools is build-time only: it supplies lupdate/lrelease so the
+# .ts catalogs can be refreshed and compiled. Nothing links against it.
+find_package(Qt6 REQUIRED COMPONENTS Widgets DBus Network LinguistTools)
+
+# Tests are opt-in so an ordinary build needs neither Qt6::Test nor ctest.
+# The CI workflow turns them on; packaging does not.
+option(QTMONITOR_BUILD_TESTS "Build the parser tests" OFF)
+if(QTMONITOR_BUILD_TESTS)
+    find_package(Qt6 REQUIRED COMPONENTS Test)
+    enable_testing()
+endif()
 find_package(KF6Auth REQUIRED)
 find_package(KF6Config REQUIRED)
-find_package(KF6Solid REQUIRED)
 
 qt_standard_project_setup()
 
@@ -96,7 +105,18 @@ target_link_libraries(qtmonitor PRIVATE
     KF6::AuthCore
     KF6::ConfigCore
     KF6::ConfigGui
-    KF6::Solid
+)
+
+# Translations. The .qm files are compiled from the catalogs below and
+# embedded in the binary under :/i18n, so a translated build is one file with
+# no runtime lookup path to get wrong. `cmake --build build --target
+# update_translations` re-runs lupdate over the sources to refresh them.
+#
+# The helper is deliberately excluded: it runs as root under D-Bus activation,
+# where the invoking user's locale is not in the environment, so its few
+# refusal strings stay in English rather than being translated unreliably.
+qt_add_translations(qtmonitor
+    TS_FILES translations/qtmonitor_en.ts
 )
 
 # ---------------------------------------------------------------------------
@@ -178,3 +198,22 @@ install(TARGETS qtmonitor
 install(FILES org.qtmonitor.app.desktop
     DESTINATION share/applications
 )
+
+# AppStream metadata, which is what lists the app in Discover, GNOME Software
+# and Flathub. Without it the project is findable only by people who already
+# know its name.
+install(FILES org.qtmonitor.app.metainfo.xml
+    DESTINATION share/metainfo
+)
+
+# The desktop entry's Icon=qtmonitor is resolved through the hicolor theme at
+# launch, so the SVG has to land on disk as well as inside the binary's Qt
+# resources: the compiled-in copy is only reachable once the app is running,
+# which is too late for the launcher that has to draw the icon first.
+install(FILES src/icons/qtmonitor.svg
+    DESTINATION share/icons/hicolor/scalable/apps
+)
+
+if(QTMONITOR_BUILD_TESTS)
+    add_subdirectory(tests)
+endif()

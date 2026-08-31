@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  AppStream metadata. This is what puts the app in Discover, GNOME Software
+  and Flathub; without it the project is installable only by people who
+  already know it exists.
+
+  The component id matches the desktop entry's basename, which is how
+  AppStream pairs the two.
+-->
+<component type="desktop-application">
+  <id>org.qtmonitor.app</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+
+  <name>Qtmonitor</name>
+  <summary>Resource and task monitor for Linux</summary>
+
+  <developer id="io.github.azalea224">
+    <name>Azalea</name>
+  </developer>
+
+  <description>
+    <p>
+      A Qt6/KF6 resource and task monitor with the clear, at-a-glance layout
+      Windows Task Manager is known for, delivered as a Linux-native tool. It
+      runs correctly on any desktop environment or window manager, and needs
+      no monitoring daemon.
+    </p>
+    <p>Features:</p>
+    <ul>
+      <li>A live process table fed from /proc, with configurable columns that
+      persist between runs, search, and a kernel-thread toggle</li>
+      <li>CPU usage as a share of total capacity, the way Task Manager reports
+      it, rather than per-core percentages that exceed 100</li>
+      <li>Ending a process sends SIGTERM and then offers SIGKILL, using real
+      signal names; another user's process raises polkit's own authentication
+      dialog</li>
+      <li>Per-resource pages for CPU, memory, every GPU, every disk and every
+      network interface, each with live graphs painted from the desktop's own
+      palette</li>
+      <li>Disk active time charted separately from throughput, because a disk
+      can be saturated at a low transfer rate</li>
+      <li>XDG autostart entries and systemd user units listed together in one
+      Startup Apps tab, each enableable in place</li>
+      <li>Per-user session summaries from logind, with that user's processes
+      one expand away</li>
+      <li>Values that genuinely cannot be read show an em dash rather than a
+      misleading zero</li>
+    </ul>
+    <p>
+      AMD and Intel GPUs are read straight from sysfs and DRM fdinfo with no
+      extra tool. NVIDIA cards need nvidia-utils, since the proprietary driver
+      publishes neither; a card without it still gets a page explaining why
+      its graphs are empty.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">org.qtmonitor.app.desktop</launchable>
+
+  <categories>
+    <category>System</category>
+    <category>Monitor</category>
+  </categories>
+
+  <url type="homepage">https://github.com/Azalea224/Qtmonitor</url>
+  <url type="bugtracker">https://github.com/Azalea224/Qtmonitor/issues</url>
+  <url type="vcs-browser">https://github.com/Azalea224/Qtmonitor</url>
+
+  <supports>
+    <control>keyboard</control>
+    <control>pointing</control>
+  </supports>
+
+  <requires>
+    <display_length compare="ge">768</display_length>
+  </requires>
+
+  <screenshots>
+    <screenshot type="default">
+      <caption>The Processes tab, sorted by memory use</caption>
+      <image>https://raw.githubusercontent.com/Azalea224/Qtmonitor/main/docs/images/processes.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>The Performance tab on the CPU page, with a per-core grid</caption>
+      <image>https://raw.githubusercontent.com/Azalea224/Qtmonitor/main/docs/images/performance-cpu.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>The Memory page, with the per-slot DIMM inventory</caption>
+      <image>https://raw.githubusercontent.com/Azalea224/Qtmonitor/main/docs/images/performance-memory.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>A GPU page, measured through sysfs on an AMD card</caption>
+      <image>https://raw.githubusercontent.com/Azalea224/Qtmonitor/main/docs/images/performance-gpu-amd.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>A drive page, with active time charted apart from throughput</caption>
+      <image>https://raw.githubusercontent.com/Azalea224/Qtmonitor/main/docs/images/performance-disk.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>The Startup Apps tab</caption>
+      <image>https://raw.githubusercontent.com/Azalea224/Qtmonitor/main/docs/images/startup-apps.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>The Users tab, with one user expanded</caption>
+      <image>https://raw.githubusercontent.com/Azalea224/Qtmonitor/main/docs/images/users.png</image>
+    </screenshot>
+  </screenshots>
+
+  <!--
+    No network access, no filesystem access beyond the user's own config, and
+    nothing user-generated to moderate. Every field is "none" on purpose
+    rather than by omission.
+  -->
+  <content_rating type="oars-1.1" />
+
+  <releases>
+    <release version="0.1.0" date="2026-08-26">
+      <description>
+        <p>
+          First release. Four working tabs: Processes, Performance, Startup
+          Apps and Users.
+        </p>
+      </description>
+    </release>
+  </releases>
+</component>

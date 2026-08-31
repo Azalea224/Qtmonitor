@@ -1,5 +1,6 @@
 #include "optionaltools.h"
 
+#include <QCoreApplication>
 #include <QStandardPaths>
 
 namespace optionaltools {
@@ -15,9 +16,12 @@ struct Definition {
 // The full set of optional tools. Adding one here is all that is needed for
 // it to appear in the dependency overview.
 constexpr Definition kDefinitions[] = {
-    {Tool::NvidiaSmi, "nvidia-smi", "NVIDIA GPU metrics", "nvidia-utils"},
-    {Tool::Sensors, "sensors", "Temperature sensors", "lm_sensors"},
-    {Tool::Systemctl, "systemctl", "systemd user services", "systemd"},
+    {Tool::NvidiaSmi, "nvidia-smi",
+     QT_TRANSLATE_NOOP("optionaltools", "NVIDIA GPU metrics"), "nvidia-utils"},
+    {Tool::Sensors, "sensors",
+     QT_TRANSLATE_NOOP("optionaltools", "Temperature sensors"), "lm_sensors"},
+    {Tool::Systemctl, "systemctl",
+     QT_TRANSLATE_NOOP("optionaltools", "systemd user services"), "systemd"},
 };
 
 constexpr int kToolCount = static_cast<int>(std::size(kDefinitions));
@@ -33,7 +37,8 @@ const QVector<ToolInfo> &resolved()
             ToolInfo entry;
             entry.tool = definition.tool;
             entry.executable = QString::fromLatin1(definition.executable);
-            entry.purpose = QString::fromLatin1(definition.purpose);
+            entry.purpose =
+                QCoreApplication::translate("optionaltools", definition.purpose);
             entry.packageHint = QString::fromLatin1(definition.packageHint);
             entry.absolutePath = QStandardPaths::findExecutable(entry.executable);
             result.append(entry);
@@ -69,7 +74,8 @@ QString path(Tool tool)
 QString missingHint(Tool tool)
 {
     const ToolInfo &entry = info(tool);
-    return QStringLiteral("%1 need %2 (package %3), which is not installed.")
+    return QCoreApplication::translate(
+               "optionaltools", "%1 need %2 (package %3), which is not installed.")
         .arg(entry.purpose, entry.executable, entry.packageHint);
 }
 

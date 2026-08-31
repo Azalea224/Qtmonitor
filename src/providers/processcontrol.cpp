@@ -1,5 +1,6 @@
 #include "processcontrol.h"
 
+#include <QCoreApplication>
 #include <QFile>
 #include <QVariant>
 
@@ -87,11 +88,11 @@ void sendPrivileged(int pid, Signal signal, quint64 startTicks,
 {
     if (!privilegedBackendAvailable()) {
         PrivilegedOutcome outcome;
-        outcome.message =
-            QStringLiteral("Qtmonitor is not installed system-wide, so it "
-                           "cannot ask for authorization. The privileged "
-                           "helper and its polkit policy are only present "
-                           "after installing the package.");
+        outcome.message = QCoreApplication::translate(
+            "processcontrol",
+            "Qtmonitor is not installed system-wide, so it cannot ask for "
+            "authorization. The privileged helper and its polkit policy are "
+            "only present after installing the package.");
         done(outcome);
         return;
     }
@@ -107,8 +108,9 @@ void sendPrivileged(int pid, Signal signal, quint64 startTicks,
 
     if (!action.isValid()) {
         PrivilegedOutcome outcome;
-        outcome.message = QStringLiteral("The authorization action is not "
-                                         "registered on this system.");
+        outcome.message = QCoreApplication::translate(
+            "processcontrol",
+            "The authorization action is not registered on this system.");
         done(outcome);
         return;
     }
@@ -145,16 +147,19 @@ QString describe(Result result)
 {
     switch (result) {
     case Result::Ok:
-        return QStringLiteral("Signal sent.");
+        return QCoreApplication::translate("processcontrol", "Signal sent.");
     case Result::NotPermitted:
-        return QStringLiteral("Not permitted — this process belongs to "
-                              "another user.");
+        return QCoreApplication::translate(
+            "processcontrol",
+            "Not permitted — this process belongs to another user.");
     case Result::NoSuchProcess:
-        return QStringLiteral("The process has already exited.");
+        return QCoreApplication::translate("processcontrol",
+                                           "The process has already exited.");
     case Result::Failed:
         break;
     }
-    return QStringLiteral("Could not signal the process.");
+    return QCoreApplication::translate("processcontrol",
+                                       "Could not signal the process.");
 }
 
 } // namespace processcontrol

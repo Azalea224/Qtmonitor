@@ -1,5 +1,6 @@
 #include "drmgpuprovider.h"
 
+#include <QCoreApplication>
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
@@ -8,6 +9,8 @@
 
 #include <dirent.h>
 #include <unistd.h>
+
+#include <utility>
 
 #include "optionaltools.h"
 
@@ -128,7 +131,8 @@ QString genericVendorName(const QString &vendorId)
 
 } // namespace
 
-DrmGpuProvider::DrmGpuProvider()
+DrmGpuProvider::DrmGpuProvider(QString root)
+    : m_root(std::move(root))
 {
     discoverDevices();
 }
@@ -150,7 +154,7 @@ QVector<GpuDeviceInfo> DrmGpuProvider::devices() const
 
 void DrmGpuProvider::discoverDevices()
 {
-    const QDir drmDir(QStringLiteral("/sys/class/drm"));
+    const QDir drmDir(m_root + QStringLiteral("/sys/class/drm"));
     if (!drmDir.exists()) {
         return;
     }
@@ -162,8 +166,8 @@ void DrmGpuProvider::discoverDevices()
         drmDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::System);
 
     for (const QString &entry : entries) {
-        const QString devicePath =
-            QStringLiteral("/sys/class/drm/") + entry + QStringLiteral("/device");
+        const QString devicePath = m_root + QStringLiteral("/sys/class/drm/")
+            + entry + QStringLiteral("/device");
         const QString deviceId = QFileInfo(devicePath).canonicalFilePath().section(
             QLatin1Char('/'), -1);
         if (deviceId.isEmpty()) {
@@ -202,7 +206,9 @@ void DrmGpuProvider::discoverDevices()
             device.info.name = genericVendorName(vendorId);
         }
         if (device.info.name.isEmpty()) {
-            device.info.name = QStringLiteral("GPU %1").arg(deviceId);
+            device.info.name =
+                QCoreApplication::translate("DrmGpuProvider", "GPU %1")
+                    .arg(deviceId);
         }
 
         device.info.memTotalBytes =

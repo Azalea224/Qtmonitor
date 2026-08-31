@@ -32,7 +32,10 @@
 class DrmGpuProvider final : public IGpuProvider
 {
 public:
-    DrmGpuProvider();
+    // `root` is prepended to the /sys reads; empty is the real filesystem.
+    // Only device discovery honours it — the per-process fdinfo walk uses
+    // opendir() on /proc directly and is not covered by the fixture tests.
+    explicit DrmGpuProvider(QString root = QString());
 
     bool isAvailable() const override;
     QVector<GpuDeviceInfo> devices() const override;
@@ -70,6 +73,7 @@ private:
     bool parseFdInfo(const QByteArray &data, const QString &nodeName,
                      FdInfoEntry &out) const;
 
+    QString m_root;
     QVector<Device> m_devices;
     // Maps "renderD129" / "card0" to a device id, for drivers that omit
     // drm-pdev from fdinfo.

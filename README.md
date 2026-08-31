@@ -141,8 +141,8 @@ what Windows' Details tab does, so this one is waiting on a distinct job.
 ## Dependencies
 
 All packages are from the official Arch repositories. KF6 libraries are
-packaged under their plain names (`kauth`, `kconfig`, `solid`) — there is no
-`kf6-` prefix in Arch package names.
+packaged under their plain names (`kauth`, `kconfig`) — there is no `kf6-`
+prefix in Arch package names.
 
 ### Required (build time)
 
@@ -152,9 +152,9 @@ packaged under their plain names (`kauth`, `kconfig`, `solid`) — there is no
 | `ninja` (or `make`) | Build tool |
 | `gcc` | C++17 compiler |
 | `extra/qt6-base` | Qt6 Widgets, DBus and Network |
+| `extra/qt6-tools` | `lupdate`/`lrelease` for the translation catalogs |
 | `extra/kauth` | Privileged actions via polkit (KAuth) |
 | `extra/kconfig` | Settings storage (KConfig) |
-| `extra/solid` | Hardware/device info (Solid) |
 
 Qt6 DBus and Qt6 Network both ship inside `qt6-base`, so reading logind
 sessions and network interface addresses adds no package of its own. There is intentionally **no** `qt6-charts` dependency.
@@ -259,8 +259,70 @@ helper away from its policy file and escalation silently stops working. CMake
 warns at configure time if the prefix is something else.
 
 Installing places the binary in `/usr/bin`, the desktop entry in
-`/usr/share/applications`, and the KAuth helper plus its polkit action and
-D-Bus files where the system bus expects them.
+`/usr/share/applications`, the AppStream metadata in `/usr/share/metainfo`,
+the application icon in the hicolor theme, and the KAuth helper plus its
+polkit action and D-Bus files where the system bus expects them.
+
+### Tests
+
+The `/proc` and `/sys` parsers are covered by fixture-based tests. Every
+provider takes a filesystem root that is prepended to the paths it reads —
+empty in the application, and a temporary directory seeded from
+`tests/fixtures/` under test — so the parsing and the rate arithmetic run
+against known input on any machine.
+
+```bash
+cmake -B build -G Ninja -DQTMONITOR_BUILD_TESTS=ON
+cmake --build build
+ctest --test-dir build --output-on-failure
+```
+
+Tests are off by default, so an ordinary or packaged build needs neither
+`qt6-base`'s Test module nor ctest.
+
+What they pin down is the delta arithmetic: a rate is a counter difference
+divided by elapsed time, and a wrong divisor, an unhandled counter reset or
+an off-by-one in a column index all still produce a number that looks
+entirely plausible on a graph. Each case asserts an exact expected value —
+1 MiB/s, 25% active, a queue depth of 1.5 — computed by hand from the
+fixture. The interval is supplied to the provider rather than measured, so
+no assertion depends on how long the test process was scheduled out for.
+
+Deliberately not covered: the filesystem list on the Drives page, which calls
+`statvfs()` on real mount points and so cannot be driven from a fixture tree,
+and the GPU provider's per-process fdinfo walk, which uses `opendir()` on
+`/proc` directly. GPU *discovery* is covered.
+
+### Translations
+
+Every user-facing string goes through `tr()`, and the catalogs live in
+`translations/`. `qtmonitor_en.ts` is the source-language template; the
+compiled `.qm` files are embedded in the binary under `:/i18n`, so a
+translated build is still a single file with no runtime lookup path.
+
+To refresh the catalogs after changing or adding strings:
+
+```bash
+cmake --build build --target update_translations
+```
+
+To start a new language, copy the template and hand it to Linguist:
+
+```bash
+cp translations/qtmonitor_en.ts translations/qtmonitor_de.ts
+```
+
+then add it to `TS_FILES` in `CMakeLists.txt`. The language is chosen from
+the system locale at startup; a locale with no catalog falls back to English,
+which is the source language and always complete.
+
+Qt's own strings — the buttons in the confirmation dialogs — come from the
+`qtbase` catalog that ships with Qt, loaded alongside ours.
+
+The privileged helper is deliberately left untranslated. It runs as root
+under D-Bus activation, where the invoking user's locale is not part of the
+environment, so its handful of refusal strings would be translated to the
+wrong language as often as the right one.
 
 ## Design notes
 
@@ -290,6 +352,18 @@ non-positive PID, accepts an enum for *terminate* or *kill* rather than a
 signal number so no arbitrary signal can be smuggled through, and re-checks
 the target's start time before signalling, which defeats PID reuse between
 the click and the call.
+
+## Continuous integration
+
+`.github/workflows/ci.yml` runs on Arch rather than on `ubuntu-latest` with a
+backported Qt, because Arch is what the app is installed into and a green
+build against an older Qt would prove nothing. Three jobs: build and test;
+validate the desktop entry and the AppStream metadata; and regenerate the
+translation catalog and fail if it differs from what is committed.
+
+The build job also installs to a staging root and asserts that the binary,
+desktop entry, metainfo and icon all landed — a plain build would not have
+caught the icon that `cmake --install` used to omit.
 
 ## License
 

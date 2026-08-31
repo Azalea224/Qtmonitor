@@ -45,17 +45,17 @@ MainWindow::MainWindow(QWidget *parent)
 {
     setWindowTitle(QStringLiteral("Qtmonitor"));
 
-    m_tabs->addTab(new ProcessesPage(m_sampler, this), QStringLiteral("Processes"));
-    m_tabs->addTab(new PerformancePage(m_sampler, this), QStringLiteral("Performance"));
-    m_tabs->addTab(new StartupPage(this), QStringLiteral("Startup Apps"));
-    m_tabs->addTab(new UsersPage(m_sampler, this), QStringLiteral("Users"));
-    m_tabs->addTab(new PlaceholderPage(4, this), QStringLiteral("Details"));
+    m_tabs->addTab(new ProcessesPage(m_sampler, this), tr("Processes"));
+    m_tabs->addTab(new PerformancePage(m_sampler, this), tr("Performance"));
+    m_tabs->addTab(new StartupPage(this), tr("Startup Apps"));
+    m_tabs->addTab(new UsersPage(m_sampler, this), tr("Users"));
+    m_tabs->addTab(new PlaceholderPage(4, this), tr("Details"));
 
     // A corner button rather than a menu bar: one action does not justify a
     // menu, and it keeps the window chrome identical on every desktop.
     auto *settingsButton = new QToolButton(this);
-    settingsButton->setText(QStringLiteral("Settings"));
-    settingsButton->setToolTip(QStringLiteral("Update speed, units and appearance"));
+    settingsButton->setText(tr("Settings"));
+    settingsButton->setToolTip(tr("Update speed, units and appearance"));
     settingsButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     settingsButton->setAutoRaise(true);
     settingsButton->setIcon(QIcon::fromTheme(

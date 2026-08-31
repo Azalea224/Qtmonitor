@@ -1,11 +1,13 @@
 #include "diskprovider.h"
 
+#include <QCoreApplication>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QTextStream>
 
 #include <algorithm>
+#include <utility>
 
 #include <sys/statvfs.h>
 
@@ -40,22 +42,24 @@ bool isUninterestingBlockDevice(const QString &name, quint64 sizeBytes)
 QString describeKind(const QString &name, bool rotational, bool removable)
 {
     if (name.startsWith(QLatin1String("zram"))) {
-        return QStringLiteral("Compressed RAM");
+        return QCoreApplication::translate("DiskProvider", "Compressed RAM");
     }
     if (removable) {
-        return rotational ? QStringLiteral("Removable disk")
-                          : QStringLiteral("Removable drive");
+        return rotational
+            ? QCoreApplication::translate("DiskProvider", "Removable disk")
+            : QCoreApplication::translate("DiskProvider", "Removable drive");
     }
-    return rotational ? QStringLiteral("HDD") : QStringLiteral("SSD");
+    return rotational ? QCoreApplication::translate("DiskProvider", "HDD")
+                      : QCoreApplication::translate("DiskProvider", "SSD");
 }
 
 // Maps a partition's kernel name to the whole disk it lives on. /sys/class/block
 // entries are symlinks into the device tree, where a partition sits inside its
 // disk's directory, so the parent component is the answer. A device with no
 // "partition" attribute already is a whole disk.
-QString diskForBlockDevice(const QString &kernelName)
+QString diskForBlockDevice(const QString &root, const QString &kernelName)
 {
-    const QString base = QStringLiteral("/sys/class/block/") + kernelName;
+    const QString base = root + QStringLiteral("/sys/class/block/") + kernelName;
     if (!QFile::exists(base)) {
         return {};
     }
@@ -71,19 +75,21 @@ QString diskForBlockDevice(const QString &kernelName)
 
 } // namespace
 
-ProcfsDiskProvider::ProcfsDiskProvider()
+ProcfsDiskProvider::ProcfsDiskProvider(QString root)
+    : m_root(std::move(root))
 {
     enumerateDevices();
 }
 
 bool ProcfsDiskProvider::isAvailable() const
 {
-    return QFile::exists(QStringLiteral("/proc/diskstats")) && !m_devices.isEmpty();
+    return QFile::exists(m_root + QStringLiteral("/proc/diskstats"))
+        && !m_devices.isEmpty();
 }
 
 void ProcfsDiskProvider::enumerateDevices()
 {
-    const QDir blockDir(QStringLiteral("/sys/block"));
+    const QDir blockDir(m_root + QStringLiteral("/sys/block"));
     const QStringList names =
         blockDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
 
@@ -136,7 +142,7 @@ void ProcfsDiskProvider::refreshMounts()
 {
     m_mounts.clear();
 
-    QFile file(QStringLiteral("/proc/self/mounts"));
+    QFile file(m_root + QStringLiteral("/proc/self/mounts"));
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         return;
     }
@@ -177,7 +183,7 @@ void ProcfsDiskProvider::refreshMounts()
         const QString kernelName = canonical.isEmpty()
             ? sourceInfo.fileName()
             : QFileInfo(canonical).fileName();
-        const QString diskId = diskForBlockDevice(kernelName);
+        const QString diskId = diskForBlockDevice(m_root, kernelName);
         if (diskId.isEmpty()) {
             continue;
         }
@@ -247,7 +253,11 @@ QVector<DiskSnapshot> ProcfsDiskProvider::sample()
     if (first) {
         m_elapsed.start();
     }
+    return sampleWithElapsed(elapsedMsec);
+}
 
+QVector<DiskSnapshot> ProcfsDiskProvider::sampleWithElapsed(double elapsedMsec)
+{
     if (!m_sinceMountRefresh.isValid()
         || m_sinceMountRefresh.elapsed() >= kMountRefreshMsec) {
         refreshMounts();
@@ -256,7 +266,7 @@ QVector<DiskSnapshot> ProcfsDiskProvider::sample()
 
     QHash<QString, Counters> current;
 
-    QFile file(QStringLiteral("/proc/diskstats"));
+    QFile file(m_root + QStringLiteral("/proc/diskstats"));
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QTextStream in(&file);
         QString line;

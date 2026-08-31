@@ -192,9 +192,9 @@ void Settings::applyTheme() const
 QString Settings::formatTemperature(double celsius) const
 {
     if (m_temperatureUnit == TemperatureUnit::Fahrenheit) {
-        return QStringLiteral("%1 °F").arg(celsius * 9.0 / 5.0 + 32.0, 0, 'f', 0);
+        return tr("%1 °F").arg(celsius * 9.0 / 5.0 + 32.0, 0, 'f', 0);
     }
-    return QStringLiteral("%1 °C").arg(celsius, 0, 'f', 0);
+    return tr("%1 °C").arg(celsius, 0, 'f', 0);
 }
 
 int Settings::sampleCount(int seconds) const
@@ -211,9 +211,11 @@ QVector<int> Settings::pollIntervalChoices()
 QString Settings::describePollInterval(int msec)
 {
     if (msec % 1000 == 0) {
-        const int seconds = msec / 1000;
-        return seconds == 1 ? QStringLiteral("1 second")
-                            : QStringLiteral("%1 seconds").arg(seconds);
+        // %n rather than a hand-rolled 1-vs-many branch: languages with more
+        // than two plural forms cannot be expressed by that branch, and Qt
+        // picks the right form from the translation's own plural rule.
+        return tr("%n second(s)", "poll interval", msec / 1000);
     }
-    return QStringLiteral("%1 seconds").arg(msec / 1000.0, 0, 'f', 1);
+    return tr("%1 seconds", "fractional poll interval")
+        .arg(msec / 1000.0, 0, 'f', 1);
 }

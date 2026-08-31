@@ -21,7 +21,7 @@ MemoryPage::MemoryPage(Sampler *sampler, QWidget *parent)
     summaryFont.setPointSize(summaryFont.pointSize() + 4);
     summaryFont.setBold(true);
 
-    m_summary = new QLabel(QStringLiteral("Memory"), this);
+    m_summary = new QLabel(tr("Memory"), this);
     m_summary->setFont(summaryFont);
     m_detail = new QLabel(this);
     m_swapDetail = new QLabel(this);
@@ -30,10 +30,10 @@ MemoryPage::MemoryPage(Sampler *sampler, QWidget *parent)
         theming::markSecondary(label, palette());
     }
 
-    m_graph = new HistoryGraph(QStringLiteral("Memory / swap usage"), kHistorySeconds, this);
+    m_graph = new HistoryGraph(tr("Memory / swap usage"), kHistorySeconds, this);
     m_graph->setYUnit(QStringLiteral("GiB"));
-    m_memSeries = m_graph->addSeries(QStringLiteral("Memory"), QColor());
-    m_swapSeries = m_graph->addSeries(QStringLiteral("Swap"), QColor());
+    m_memSeries = m_graph->addSeries(tr("Memory"), QColor());
+    m_swapSeries = m_graph->addSeries(tr("Swap"), QColor());
 
     layout->addWidget(m_summary, 0, 0);
     layout->addWidget(m_detail, 0, 1, Qt::AlignRight);
@@ -76,7 +76,7 @@ QWidget *MemoryPage::buildDetailsBox()
 {
     const MemoryStaticInfo info = loadMemoryStaticInfo();
 
-    auto *box = new QGroupBox(QStringLiteral("Details"), this);
+    auto *box = new QGroupBox(tr("Details"), this);
     // QGridLayout, not QFormLayout: QFormLayout clips word-wrapped labels
     // vertically (broken height-for-width), which truncated long values.
     auto *grid = new QGridLayout(box);
@@ -85,10 +85,9 @@ QWidget *MemoryPage::buildDetailsBox()
 
     if (!info.available) {
         auto *hint = new QLabel(
-            QStringLiteral("Memory module details unavailable — the udev "
-                           "database has no DMI memory properties on this "
-                           "system (needs systemd 255+ or a boot-time udev "
-                           "trigger)."),
+            tr("Memory module details unavailable — the udev database has "
+               "no DMI memory properties on this system (needs systemd 255+ "
+               "or a boot-time udev trigger)."),
             box);
         hint->setWordWrap(true);
         m_secondaryLabels.append(hint);
@@ -112,26 +111,26 @@ QWidget *MemoryPage::buildDetailsBox()
         ++row;
     };
 
-    addRow(QStringLiteral("Type"), info.type);
-    addRow(QStringLiteral("Configuration"),
-           QStringLiteral("%1 × %2").arg(info.stickCount)
+    addRow(tr("Type"), info.type);
+    addRow(tr("Configuration"),
+           tr("%1 × %2").arg(info.stickCount)
                .arg(formatBytes(info.perStickBytes)));
     if (info.configuredSpeedMTs > 0) {
         // Firmware reports the running speed; if it differs from the rated
         // speed, show both — that usually means XMP/EXPO is off.
-        QString speed = QStringLiteral("%1 MT/s")
+        QString speed = tr("%1 MT/s")
                             .arg(info.configuredSpeedMTs, 0, 'f', 0);
         if (info.ratedSpeedMTs > 0
             && !qFuzzyCompare(info.ratedSpeedMTs, info.configuredSpeedMTs)) {
-            speed += QStringLiteral(" (rated %1 MT/s)")
+            speed += tr(" (rated %1 MT/s)")
                          .arg(info.ratedSpeedMTs, 0, 'f', 0);
         }
-        addRow(QStringLiteral("Speed"), speed);
+        addRow(tr("Speed"), speed);
     }
-    addRow(QStringLiteral("Manufacturer"), info.manufacturer);
-    addRow(QStringLiteral("Part number"), info.partNumber);
+    addRow(tr("Manufacturer"), info.manufacturer);
+    addRow(tr("Part number"), info.partNumber);
     if (info.ranks > 0) {
-        addRow(QStringLiteral("Ranks"), QString::number(info.ranks));
+        addRow(tr("Ranks"), QString::number(info.ranks));
     }
 
     return box;
@@ -164,16 +163,16 @@ void MemoryPage::onMemorySample(const MemorySnapshot &snapshot)
     const double usedPercent = snapshot.memTotalBytes > 0
         ? 100.0 * snapshot.memUsedBytes / snapshot.memTotalBytes
         : 0.0;
-    m_summary->setText(QStringLiteral("Memory — %1 / %2")
+    m_summary->setText(tr("Memory — %1 / %2")
                            .arg(formatBytes(snapshot.memUsedBytes),
                                 formatBytes(snapshot.memTotalBytes)));
-    m_detail->setText(QStringLiteral("%1% used").arg(usedPercent, 0, 'f', 1));
+    m_detail->setText(tr("%1% used").arg(usedPercent, 0, 'f', 1));
 
     if (snapshot.swapTotalBytes > 0) {
-        m_swapDetail->setText(QStringLiteral("Swap: %1 / %2")
+        m_swapDetail->setText(tr("Swap: %1 / %2")
                                   .arg(formatBytes(snapshot.swapUsedBytes),
                                        formatBytes(snapshot.swapTotalBytes)));
     } else {
-        m_swapDetail->setText(QStringLiteral("Swap: none configured"));
+        m_swapDetail->setText(tr("Swap: none configured"));
     }
 }

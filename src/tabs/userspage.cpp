@@ -1,5 +1,6 @@
 #include "userspage.h"
 
+#include <QCoreApplication>
 #include <QDateTime>
 #include <QEvent>
 #include <QHeaderView>
@@ -19,19 +20,19 @@ QString describeState(QChar state)
 {
     switch (state.toLatin1()) {
     case 'R':
-        return QStringLiteral("Running");
+        return QCoreApplication::translate("ProcessModel", "Running");
     case 'S':
-        return QStringLiteral("Sleeping");
+        return QCoreApplication::translate("ProcessModel", "Sleeping");
     case 'D':
-        return QStringLiteral("Disk wait");
+        return QCoreApplication::translate("ProcessModel", "Disk wait");
     case 'Z':
-        return QStringLiteral("Zombie");
+        return QCoreApplication::translate("ProcessModel", "Zombie");
     case 'T':
-        return QStringLiteral("Stopped");
+        return QCoreApplication::translate("ProcessModel", "Stopped");
     case 't':
-        return QStringLiteral("Traced");
+        return QCoreApplication::translate("ProcessModel", "Traced");
     case 'I':
-        return QStringLiteral("Idle");
+        return QCoreApplication::translate("ProcessModel", "Idle");
     default:
         return QString(state);
     }
@@ -108,15 +109,15 @@ QVariant UsersModel::headerData(int section, Qt::Orientation orientation, int ro
     }
     switch (static_cast<Column>(section)) {
     case Name:
-        return QStringLiteral("User / process");
+        return tr("User / process");
     case Pid:
-        return QStringLiteral("PID");
+        return tr("PID");
     case Status:
-        return QStringLiteral("Status");
+        return tr("Status");
     case Cpu:
-        return QStringLiteral("CPU");
+        return tr("CPU");
     case Memory:
-        return QStringLiteral("Memory");
+        return tr("Memory");
     case ColumnCount:
         break;
     }
@@ -144,7 +145,7 @@ QVariant UsersModel::data(const QModelIndex &index, int role) const
         const UserGroup &user = m_users.at(index.row());
 
         if (role == Qt::ToolTipRole) {
-            return QStringLiteral("%1 (uid %2) · %3 processes")
+            return tr("%1 (uid %2) · %3 processes")
                 .arg(user.name)
                 .arg(user.uid)
                 .arg(user.processes.size());
@@ -408,13 +409,13 @@ void UsersPage::onProcessesSampled(const ProcessSnapshot &snapshot)
         }
     }
 
-    QString text = QStringLiteral("%1 users with running processes")
-                       .arg(m_model->userCount());
+    QString text = tr("%n user(s) with running processes", "",
+                      m_model->userCount());
     if (m_sessions.isAvailable() && withSessions > 0) {
-        text += QStringLiteral("  ·  %1 logged in").arg(withSessions);
+        text += QStringLiteral("  ·  ") + tr("%1 logged in").arg(withSessions);
     } else if (!m_sessions.isAvailable()) {
-        text += QStringLiteral("  ·  login sessions unavailable (systemd-logind "
-                               "not reachable)");
+        text += QStringLiteral("  ·  ")
+            + tr("login sessions unavailable (systemd-logind not reachable)");
     }
     m_summary->setText(text);
 }

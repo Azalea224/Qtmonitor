@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QString>
 #include <QtGlobal>
 
 struct MemorySnapshot {
@@ -24,6 +25,12 @@ public:
 class ProcfsMemoryProvider final : public IMemoryProvider
 {
 public:
+    // See ProcfsCpuProvider: empty root means the real /proc.
+    explicit ProcfsMemoryProvider(QString root = QString());
+
     bool isAvailable() const override;
     MemorySnapshot sample() override;
+
+private:
+    QString m_root;
 };

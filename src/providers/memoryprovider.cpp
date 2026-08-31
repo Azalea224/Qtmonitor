@@ -3,16 +3,23 @@
 #include <QFile>
 #include <QTextStream>
 
+#include <utility>
+
+ProcfsMemoryProvider::ProcfsMemoryProvider(QString root)
+    : m_root(std::move(root))
+{
+}
+
 bool ProcfsMemoryProvider::isAvailable() const
 {
-    return QFile::exists(QStringLiteral("/proc/meminfo"));
+    return QFile::exists(m_root + QStringLiteral("/proc/meminfo"));
 }
 
 MemorySnapshot ProcfsMemoryProvider::sample()
 {
     MemorySnapshot snapshot;
 
-    QFile file(QStringLiteral("/proc/meminfo"));
+    QFile file(m_root + QStringLiteral("/proc/meminfo"));
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         return snapshot;
     }

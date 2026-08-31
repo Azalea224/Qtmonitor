@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QCoreApplication>
 #include <QString>
 #include <QVector>
 
@@ -60,6 +61,8 @@ struct StartupEntry {
 // generated unit just mirrors it.
 class StartupProvider
 {
+    Q_DECLARE_TR_FUNCTIONS(StartupProvider)
+
 public:
     bool isAvailable() const;
 

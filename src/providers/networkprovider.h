@@ -61,11 +61,17 @@ public:
 class ProcfsNetworkProvider final : public INetworkProvider
 {
 public:
-    ProcfsNetworkProvider();
+    // `root` is prepended to every /proc and /sys path; empty is the real
+    // filesystem. See ProcfsCpuProvider for why this exists.
+    explicit ProcfsNetworkProvider(QString root = QString());
 
     bool isAvailable() const override;
     QVector<NetworkDeviceInfo> devices() const override { return m_devices; }
     QVector<NetworkSnapshot> sample() override;
+
+    // sample() with the interval supplied rather than measured; see
+    // ProcfsDiskProvider::sampleWithElapsed for why the tests need it.
+    QVector<NetworkSnapshot> sampleWithElapsed(double elapsedMsec);
 
 private:
     struct Counters {
@@ -76,6 +82,7 @@ private:
 
     void enumerateDevices();
 
+    QString m_root;
     QVector<NetworkDeviceInfo> m_devices;
     QHash<QString, Counters> m_previous;
     QElapsedTimer m_elapsed;

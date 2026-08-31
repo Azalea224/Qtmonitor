@@ -8,3 +8,4 @@ Icon=qtmonitor
 Terminal=false
 Categories=System;Monitor;Qt;
 Keywords=task;process;monitor;cpu;memory;
+StartupWMClass=qtmonitor

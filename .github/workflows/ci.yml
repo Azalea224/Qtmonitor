@@ -1,0 +1,114 @@
+name: CI
+
+# Arch is the target distribution, so the build runs on Arch rather than on
+# ubuntu-latest with a backported Qt. Qt 6.11 and KF6 are both current in the
+# official repositories, which is exactly the configuration users install
+# into; a green build on an older Qt would prove less than nothing.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: Build and test on Arch
+    runs-on: ubuntu-latest
+    container: archlinux:base-devel
+
+    steps:
+      - name: Install dependencies
+        run: |
+          pacman -Syu --noconfirm --needed \
+            git cmake ninja gcc \
+            qt6-base qt6-tools \
+            kauth kconfig \
+            hicolor-icon-theme
+
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: |
+          cmake -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_INSTALL_PREFIX=/usr \
+            -DQTMONITOR_BUILD_TESTS=ON
+
+      - name: Build
+        run: cmake --build build
+
+      # No display on a runner, and none is needed: the parser tests construct
+      # no widgets. The offscreen platform keeps QTest from failing on the
+      # missing session rather than on anything real.
+      - name: Test
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: ctest --test-dir build --output-on-failure
+
+      # Catches a broken install rule, which a plain build never would — the
+      # icon going missing from `cmake --install` is precisely the bug this
+      # repository already shipped once.
+      - name: Install to a staging root
+        run: |
+          DESTDIR="$PWD/stage" cmake --install build
+          echo "--- installed tree ---"
+          find stage -type f | sort
+          for f in \
+            stage/usr/bin/qtmonitor \
+            stage/usr/share/applications/org.qtmonitor.app.desktop \
+            stage/usr/share/metainfo/org.qtmonitor.app.metainfo.xml \
+            stage/usr/share/icons/hicolor/scalable/apps/qtmonitor.svg
+          do
+            test -f "$f" || { echo "MISSING: $f"; exit 1; }
+          done
+
+  metadata:
+    name: Validate desktop and AppStream metadata
+    runs-on: ubuntu-latest
+    container: archlinux:base-devel
+
+    steps:
+      - name: Install validators
+        run: pacman -Syu --noconfirm --needed appstream desktop-file-utils
+
+      - uses: actions/checkout@v4
+
+      # Both files are what software centres read. A malformed one does not
+      # break the build, it just quietly removes the app from every store.
+      - name: Validate the desktop entry
+        run: desktop-file-validate org.qtmonitor.app.desktop
+
+      - name: Validate the AppStream metainfo
+        run: appstreamcli validate --explain org.qtmonitor.app.metainfo.xml
+
+  translations:
+    name: Check the translation catalog is current
+    runs-on: ubuntu-latest
+    container: archlinux:base-devel
+
+    steps:
+      - name: Install dependencies
+        run: |
+          pacman -Syu --noconfirm --needed \
+            git cmake ninja gcc qt6-base qt6-tools kauth kconfig
+
+      - uses: actions/checkout@v4
+
+      # actions/checkout runs as a different user than the container's root,
+      # which makes git refuse to touch the tree at all.
+      - name: Mark the checkout safe for git
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      # A string added without re-running lupdate is invisible until someone
+      # tries to translate it. Regenerating and diffing turns that into a
+      # build failure on the commit that caused it.
+      - name: Regenerate and diff
+        run: |
+          cmake -B build -G Ninja -DCMAKE_INSTALL_PREFIX=/usr
+          cmake --build build --target update_translations
+          if ! git diff --exit-code -- translations/; then
+            echo
+            echo "translations/ is out of date."
+            echo "Run: cmake --build build --target update_translations"
+            exit 1
+          fi
