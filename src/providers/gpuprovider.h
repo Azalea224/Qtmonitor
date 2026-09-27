@@ -35,6 +35,10 @@ struct GpuSnapshot {
     double temperatureC = -1.0;
     double powerWatts = -1.0;
     double clockMhz = -1.0;
+    // Percent of the fan's maximum duty, not RPM: nvidia-smi reports nothing
+    // else. -1 on a fanless card and on every DRM-backed one, whose fans are
+    // hwmon channels and reach the Sensors page that way.
+    double fanPercent = -1.0;
 };
 
 // Per-process share, merged into ProcessInfo by the sampler. Negative means

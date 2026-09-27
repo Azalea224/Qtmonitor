@@ -189,10 +189,17 @@ void Settings::applyTheme() const
     }
 }
 
+double Settings::toDisplayTemperature(double celsius) const
+{
+    return m_temperatureUnit == TemperatureUnit::Fahrenheit
+        ? celsius * 9.0 / 5.0 + 32.0
+        : celsius;
+}
+
 QString Settings::formatTemperature(double celsius) const
 {
     if (m_temperatureUnit == TemperatureUnit::Fahrenheit) {
-        return tr("%1 °F").arg(celsius * 9.0 / 5.0 + 32.0, 0, 'f', 0);
+        return tr("%1 °F").arg(toDisplayTemperature(celsius), 0, 'f', 0);
     }
     return tr("%1 °C").arg(celsius, 0, 'f', 0);
 }

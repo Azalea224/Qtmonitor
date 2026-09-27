@@ -52,8 +52,12 @@ qt_add_executable(qtmonitor
     src/providers/drmgpuprovider.h
     src/providers/gpuprovider.cpp
     src/providers/gpuprovider.h
+    src/providers/gpusensors.cpp
+    src/providers/gpusensors.h
     src/providers/hardwareinfo.cpp
     src/providers/hardwareinfo.h
+    src/providers/hwmonprovider.cpp
+    src/providers/hwmonprovider.h
     src/providers/memoryprovider.cpp
     src/providers/memoryprovider.h
     src/providers/networkprovider.cpp
@@ -86,6 +90,8 @@ qt_add_executable(qtmonitor
     src/tabs/networkpage.h
     src/tabs/performancepage.cpp
     src/tabs/performancepage.h
+    src/tabs/sensorspage.cpp
+    src/tabs/sensorspage.h
     src/tabs/placeholderpage.cpp
     src/tabs/placeholderpage.h
     src/tabs/processespage.cpp

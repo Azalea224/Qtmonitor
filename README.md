@@ -42,7 +42,8 @@ only while the tab is visible.
 ### Performance
 
 A resource sidebar — CPU, Memory, one row per GPU, per disk and per network
-interface — with a page for each, every sidebar row carrying a live sparkline.
+interface, plus Sensors — with a page for each, every sidebar row carrying a
+live sparkline.
 
 ![The Performance tab on the CPU page](docs/images/performance-cpu.png)
 
@@ -65,6 +66,23 @@ interface — with a page for each, every sidebar row carrying a live sparkline.
 - **Network**: receive and send throughput, link state, negotiated speed,
   duplex, MTU, IPv4/IPv6/MAC addresses, since-boot totals and error and drop
   counts. One page per interface.
+- **Sensors**: every temperature, fan, voltage, power and current channel the
+  kernel exposes, read straight from `/sys/class/hwmon` — CPU package and
+  per-die temperatures, NVMe composite, DIMM modules, Wi-Fi, chipset. One
+  chart line per component, and the full channel list below it with each
+  chip's own critical and high limits where it publishes them. A single page
+  rather than one per chip, because six chips would be six sidebar rows
+  answering one question.
+
+  **This needs no optional tool.** Everything `lm_sensors` reports comes from
+  the same world-readable sysfs interface, so there is nothing to install.
+
+  The one exception is NVIDIA's proprietary driver, which registers no hwmon
+  device at all — so neither this page nor `sensors` can see the card through
+  sysfs. When `nvidia-smi` is present, the card's temperature, board power
+  and fan duty (a percentage; the driver does not report RPM) are added from
+  the same readings the GPU page already takes. Without it the card is simply
+  absent from this page, as it is from `sensors`.
 
 The throughput charts have no fixed ceiling — a disk's rated speed is
 marketing and a 2.5 Gb/s link would leave ordinary traffic invisible — so
@@ -74,8 +92,13 @@ All graphs are custom-painted widgets; there is intentionally no
 `qt6-charts` dependency. They keep a fixed 60-second window at any update
 speed, and re-derive their colors from the active palette.
 
-Drive and network data is only sampled while the Performance tab is on
-screen, the same rule the process list follows.
+Drive, network and sensor data is only sampled while the Performance tab is
+on screen, the same rule the process list follows. Sensors get a second limit
+on top of that: an hwmon read is a hardware transaction — an i2c exchange for
+a DIMM, an admin command for an NVMe controller — and costs milliseconds, not
+microseconds, so readings are re-served rather than re-taken if asked for
+again within a second. At the default speed that is invisible; at 0.5 s it
+keeps the cost flat instead of doubling it.
 
 <details>
 <summary><b>The other Performance pages</b> — memory, GPU, drives, network</summary>
@@ -135,8 +158,19 @@ an expanded or collapsed user stays that way while the numbers tick.
 
 ### Details
 
-Still a placeholder. The Processes tab's configurable columns already cover
-what Windows' Details tab does, so this one is waiting on a distinct job.
+Still a placeholder in this release, but no longer an open question. Copying
+Windows' Details tab would add a fifth tab that does nothing new, since the
+Processes tab's configurable columns already cover it. The job it is getting
+instead is an **application inspector**: pick something you have open and see
+the process that actually is it, the tree of children it spawned, and what the
+whole thing costs.
+
+One constraint is worth stating up front, because it shapes what this can be.
+Wayland does not let a client enumerate other applications' windows, and the
+foreign-toplevel protocols that come closest carry no PID — so the unit is the
+application, derived from the process tree, not the window. Reading it out of
+the compositor would mean a different code path per desktop, which is the one
+thing this project does not do.
 
 ## Dependencies
 
@@ -168,10 +202,9 @@ supported, first-class configuration.
 
 | Package | Enables |
 |---|---|
-| `nvidia-utils` | NVIDIA GPU stats via `nvidia-smi` (AMD/Intel need nothing) |
+| `nvidia-utils` | NVIDIA GPU stats via `nvidia-smi`, on the GPU and Sensors pages (AMD/Intel need nothing) |
 | `hwdata` | GPU model names from `pci.ids`; without it cards are named by vendor |
 | `systemd` | The systemd half of the Startup Apps tab; without it, XDG autostart entries are still listed |
-| `lm_sensors` | Nothing yet — registered for a future CPU/system temperature page. The temperatures shown today come from the GPU backends and need no extra tool. |
 
 DIMM details come from the udev hardware database, which extracts them from
 DMI at boot, so no `dmidecode` and no root is needed on systemd 255 or newer.

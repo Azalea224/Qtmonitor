@@ -14,6 +14,8 @@ qt_add_executable(tst_providers
     ../src/providers/cpuprovider.cpp
     ../src/providers/diskprovider.cpp
     ../src/providers/drmgpuprovider.cpp
+    ../src/providers/gpusensors.cpp
+    ../src/providers/hwmonprovider.cpp
     ../src/providers/memoryprovider.cpp
     ../src/providers/networkprovider.cpp
     ../src/providers/optionaltools.cpp

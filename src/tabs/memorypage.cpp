@@ -4,6 +4,8 @@
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QLabel>
+#include <QScrollArea>
+#include <QVBoxLayout>
 
 #include "../providers/hardwareinfo.h"
 #include "../sampler.h"
@@ -13,7 +15,12 @@
 MemoryPage::MemoryPage(Sampler *sampler, QWidget *parent)
     : QWidget(parent)
 {
-    auto *layout = new QGridLayout(this);
+    // Content sits in a scroll area like every other resource page. Besides
+    // keeping the details box reachable in a short window, QScrollArea gives
+    // the content an opaque Window background; without it this page showed
+    // the tab-widget pane through, a different shade from its neighbours.
+    auto *content = new QWidget;
+    auto *layout = new QGridLayout(content);
     layout->setContentsMargins(16, 16, 16, 16);
     layout->setSpacing(12);
 
@@ -21,16 +28,16 @@ MemoryPage::MemoryPage(Sampler *sampler, QWidget *parent)
     summaryFont.setPointSize(summaryFont.pointSize() + 4);
     summaryFont.setBold(true);
 
-    m_summary = new QLabel(tr("Memory"), this);
+    m_summary = new QLabel(tr("Memory"), content);
     m_summary->setFont(summaryFont);
-    m_detail = new QLabel(this);
-    m_swapDetail = new QLabel(this);
+    m_detail = new QLabel(content);
+    m_swapDetail = new QLabel(content);
     m_secondaryLabels = {m_detail, m_swapDetail};
     for (QLabel *label : m_secondaryLabels) {
         theming::markSecondary(label, palette());
     }
 
-    m_graph = new HistoryGraph(tr("Memory / swap usage"), kHistorySeconds, this);
+    m_graph = new HistoryGraph(tr("Memory / swap usage"), kHistorySeconds, content);
     m_graph->setYUnit(QStringLiteral("GiB"));
     m_memSeries = m_graph->addSeries(tr("Memory"), QColor());
     m_swapSeries = m_graph->addSeries(tr("Swap"), QColor());
@@ -41,6 +48,15 @@ MemoryPage::MemoryPage(Sampler *sampler, QWidget *parent)
     layout->setRowStretch(1, 1); // spare vertical space goes to the chart
     layout->addWidget(m_swapDetail, 2, 0, 1, 2);
     layout->addWidget(buildDetailsBox(), 3, 0, 1, 2);
+
+    auto *scroll = new QScrollArea(this);
+    scroll->setWidget(content);
+    scroll->setWidgetResizable(true);
+    scroll->setFrameShape(QFrame::NoFrame);
+
+    auto *pageLayout = new QVBoxLayout(this);
+    pageLayout->setContentsMargins(0, 0, 0, 0);
+    pageLayout->addWidget(scroll);
 
     applyTheme();
 

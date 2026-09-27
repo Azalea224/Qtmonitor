@@ -7,6 +7,7 @@
 #include "../providers/cpuprovider.h"
 #include "../providers/diskprovider.h"
 #include "../providers/gpuprovider.h"
+#include "../providers/hwmonprovider.h"
 #include "../providers/memoryprovider.h"
 #include "../providers/networkprovider.h"
 
@@ -65,17 +66,19 @@ public:
     explicit PerformancePage(Sampler *sampler, QWidget *parent = nullptr);
 
 private:
-    enum class ResourceKind { Cpu, Memory, Gpu, Disk, Network };
+    enum class ResourceKind { Cpu, Memory, Gpu, Disk, Network, Sensors };
 
     void addGpuResources(Sampler *sampler);
     void addDiskResources(Sampler *sampler);
     void addNetworkResources(Sampler *sampler);
+    void addSensorResources(Sampler *sampler);
     ResourceNavRow *addResource(const QString &title, ResourceKind kind, QWidget *page);
     void onCpuSample(const CpuSnapshot &snapshot);
     void onMemorySample(const MemorySnapshot &snapshot);
     void onGpuSample(const QVector<GpuSnapshot> &snapshots);
     void onDiskSample(const QVector<DiskSnapshot> &snapshots);
     void onNetworkSample(const QVector<NetworkSnapshot> &snapshots);
+    void onSensorsSample(const QVector<SensorChipSnapshot> &snapshots);
 
     QListWidget *m_nav;
     QStackedWidget *m_stack;
@@ -88,6 +91,9 @@ private:
     // Both keyed by kernel name, the identity /proc and /sys agree on.
     QHash<QString, ResourceNavRow *> m_diskRows;
     QHash<QString, ResourceNavRow *> m_networkRows;
+    // One row for all chips, not one per chip: six sensor chips would have
+    // swamped a nav that is 170-220px wide, for what is really one question.
+    ResourceNavRow *m_sensorsRow = nullptr;
 
     static constexpr int kHistorySeconds = 60;
 };

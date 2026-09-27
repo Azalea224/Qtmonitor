@@ -18,8 +18,6 @@ struct Definition {
 constexpr Definition kDefinitions[] = {
     {Tool::NvidiaSmi, "nvidia-smi",
      QT_TRANSLATE_NOOP("optionaltools", "NVIDIA GPU metrics"), "nvidia-utils"},
-    {Tool::Sensors, "sensors",
-     QT_TRANSLATE_NOOP("optionaltools", "Temperature sensors"), "lm_sensors"},
     {Tool::Systemctl, "systemctl",
      QT_TRANSLATE_NOOP("optionaltools", "systemd user services"), "systemd"},
 };

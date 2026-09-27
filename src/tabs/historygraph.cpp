@@ -133,6 +133,23 @@ void HistoryGraph::pushValue(int seriesIndex, double value)
     update();
 }
 
+void HistoryGraph::setFilled(bool filled)
+{
+    if (m_filled == filled) {
+        return;
+    }
+    m_filled = filled;
+    update();
+}
+
+void HistoryGraph::clearHistory()
+{
+    for (Series &series : m_series) {
+        series.values.clear();
+    }
+    update();
+}
+
 QSize HistoryGraph::sizeHint() const
 {
     return {480, 220};
@@ -292,9 +309,11 @@ void HistoryGraph::paintEvent(QPaintEvent *event)
         fill.closeSubpath();
 
         painter.setClipRect(plot);
-        QColor fillColor = s.color;
-        fillColor.setAlpha(50);
-        painter.fillPath(fill, fillColor);
+        if (m_filled) {
+            QColor fillColor = s.color;
+            fillColor.setAlpha(50);
+            painter.fillPath(fill, fillColor);
+        }
         painter.setPen(QPen(s.color, 2));
         painter.drawPath(line);
         painter.setClipping(false);

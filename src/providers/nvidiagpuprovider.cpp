@@ -18,6 +18,7 @@ const QStringList kQueryFields = {
     QStringLiteral("clocks.current.graphics"),
     QStringLiteral("utilization.encoder"),
     QStringLiteral("utilization.decoder"),
+    QStringLiteral("fan.speed"),
 };
 
 // A process that hangs (a wedged driver is the usual cause) must not be
@@ -196,6 +197,8 @@ void NvidiaSmiGpuProvider::parseQueryOutput(const QByteArray &output)
         if (encoder >= 0.0 || decoder >= 0.0) {
             snapshot.videoPercent = qMax(encoder, decoder);
         }
+        // "[N/A]" on a card with no fan of its own, which parses to -1.
+        snapshot.fanPercent = parseOptionalDouble(fields.at(9));
 
         snapshots.append(snapshot);
     }

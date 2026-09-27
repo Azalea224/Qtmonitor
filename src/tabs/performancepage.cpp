@@ -14,6 +14,7 @@
 #include "memorypage.h"
 #include "minigraph.h"
 #include "networkpage.h"
+#include "sensorspage.h"
 #include "theming.h"
 
 ResourceNavRow::ResourceNavRow(const QString &title, int historySeconds,
@@ -114,6 +115,7 @@ PerformancePage::PerformancePage(Sampler *sampler, QWidget *parent)
     addGpuResources(sampler);
     addDiskResources(sampler);
     addNetworkResources(sampler);
+    addSensorResources(sampler);
 
     m_nav->setSpacing(2);
     m_nav->setUniformItemSizes(true);
@@ -141,6 +143,7 @@ PerformancePage::PerformancePage(Sampler *sampler, QWidget *parent)
     connect(sampler, &Sampler::gpuSampled, this, &PerformancePage::onGpuSample);
     connect(sampler, &Sampler::diskSampled, this, &PerformancePage::onDiskSample);
     connect(sampler, &Sampler::networkSampled, this, &PerformancePage::onNetworkSample);
+    connect(sampler, &Sampler::sensorsSampled, this, &PerformancePage::onSensorsSample);
 }
 
 void PerformancePage::addGpuResources(Sampler *sampler)
@@ -184,6 +187,22 @@ void PerformancePage::addNetworkResources(Sampler *sampler)
     }
 }
 
+void PerformancePage::addSensorResources(Sampler *sampler)
+{
+    const QVector<SensorChipInfo> chips = sampler->sensorChips();
+    if (chips.isEmpty()) {
+        // A machine whose kernel exposes no hwmon chip at all gets no row,
+        // the same way a GPU-less machine gets no GPU row. An empty page
+        // would be worse than an absent one.
+        return;
+    }
+    m_sensorsRow = addResource(tr("Sensors"), ResourceKind::Sensors,
+                               new SensorsPage(sampler, chips, this));
+    // Temperatures are not a percentage of anything, so the sparkline plots
+    // against its own rolling peak like the throughput rows do.
+    m_sensorsRow->setAutoScale(true);
+}
+
 ResourceNavRow *PerformancePage::addResource(const QString &title, ResourceKind kind,
                                              QWidget *page)
 {
@@ -195,6 +214,32 @@ ResourceNavRow *PerformancePage::addResource(const QString &title, ResourceKind 
     m_stack->addWidget(page);
     m_rows.append(row);
     return row;
+}
+
+void PerformancePage::onSensorsSample(const QVector<SensorChipSnapshot> &snapshots)
+{
+    if (!m_sensorsRow) {
+        return;
+    }
+    // The sparkline summarises the machine with its hottest reading, which is
+    // the one number a glance at this row should answer. Unreadable channels
+    // carry -1 and are skipped rather than dragging the peak down.
+    //
+    // Temperature channels only. The snapshot carries values, not kinds, and
+    // maxing across every channel would let a 1200 RPM fan or a 65 W power
+    // reading masquerade as the peak temperature. The channel id is the sysfs
+    // prefix by construction, which is what makes this test safe.
+    double hottest = -1.0;
+    for (const SensorChipSnapshot &snapshot : snapshots) {
+        for (const SensorReading &reading : snapshot.readings) {
+            if (reading.channelId.startsWith(QLatin1String("temp"))) {
+                hottest = qMax(hottest, reading.value);
+            }
+        }
+    }
+    if (hottest >= 0.0) {
+        m_sensorsRow->pushValue(hottest);
+    }
 }
 
 void PerformancePage::onCpuSample(const CpuSnapshot &snapshot)

@@ -40,6 +40,8 @@
       palette</li>
       <li>Disk active time charted separately from throughput, because a disk
       can be saturated at a low transfer rate</li>
+      <li>Temperatures, fans, voltages and power from every hwmon chip the
+      kernel exposes, needing no extra tool or elevation</li>
       <li>XDG autostart entries and systemd user units listed together in one
       Startup Apps tab, each enableable in place</li>
       <li>Per-user session summaries from logind, with that user's processes

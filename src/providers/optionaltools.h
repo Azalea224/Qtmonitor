@@ -11,7 +11,14 @@ namespace optionaltools {
 
 enum class Tool {
     NvidiaSmi, // NVIDIA GPU metrics (no sysfs equivalent for the blob driver)
-    Sensors,   // lm_sensors JSON, for the temperature work in a later phase
+    // There is deliberately no lm_sensors entry. One was registered from
+    // Phase 1 "for the temperature work in a later phase"; when that work
+    // arrived it turned out to need nothing, because everything `sensors`
+    // reports comes from /sys/class/hwmon, which is world-readable and needs
+    // no tool. The entry was deleted rather than implemented — the sensors
+    // page made the zero-dependency claim stronger instead of adding an
+    // asterisk to it. See providers/hwmonprovider.h.
+    //
     // systemd is universal on the target distro, but treating it as optional
     // costs nothing and keeps the startup tab working (XDG entries only) on a
     // system running some other init.

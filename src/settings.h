@@ -55,6 +55,11 @@ public:
     // Sensors are read in °C; this renders in whichever unit is configured.
     QString formatTemperature(double celsius) const;
 
+    // The same conversion without the formatting, for callers that need the
+    // number itself — a chart plots in the displayed unit, and having it do
+    // its own °F arithmetic would put the conversion in two places.
+    double toDisplayTemperature(double celsius) const;
+
     // How many samples cover `seconds` of wall clock at the current update
     // speed. The graphs keep a fixed 60-second window whatever the speed, so
     // their "60s ago" axis label stays true instead of silently meaning

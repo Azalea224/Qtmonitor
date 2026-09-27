@@ -2,9 +2,12 @@
 
 #include <QTimer>
 
+#include "providers/gpusensors.h"
+
 Sampler::Sampler(QObject *parent)
     : QObject(parent)
     , m_timer(new QTimer(this))
+    , m_gpuSensorChips(gpusensors::chips(m_gpuRegistry.devices(), m_sensorProvider.chips()))
 {
     m_timer->setInterval(1000);
     connect(m_timer, &QTimer::timeout, this, [this] { tick(); });
@@ -58,6 +61,7 @@ void Sampler::setResourceSamplingEnabled(bool enabled)
         // span that whole gap, which self-corrects immediately.
         emit diskSampled(m_diskProvider.sample());
         emit networkSampled(m_networkProvider.sample());
+        emit sensorsSampled(sampleSensors());
     }
 }
 
@@ -83,6 +87,12 @@ ProcessSnapshot Sampler::sampleProcessesWithGpu()
     return snapshot;
 }
 
+QVector<SensorChipSnapshot> Sampler::sampleSensors()
+{
+    return m_sensorProvider.sample()
+        + gpusensors::snapshots(m_lastGpuSnapshots, m_gpuSensorChips);
+}
+
 void Sampler::tick()
 {
     emit cpuSampled(m_cpuProvider.sample());
@@ -90,11 +100,16 @@ void Sampler::tick()
 
     // Must precede sampleProcesses(): one /proc walk feeds both the device
     // totals and the per-process shares.
-    emit gpuSampled(m_gpuRegistry.sample());
+    m_lastGpuSnapshots = m_gpuRegistry.sample();
+    emit gpuSampled(m_lastGpuSnapshots);
 
     if (m_resourceSamplingEnabled) {
         emit diskSampled(m_diskProvider.sample());
         emit networkSampled(m_networkProvider.sample());
+        // The provider re-serves its last readings if called again too soon,
+        // so this stays cheap at the 0.5 s speed without the page having to
+        // know anything about it.
+        emit sensorsSampled(sampleSensors());
     }
 
     if (m_processSamplingEnabled) {

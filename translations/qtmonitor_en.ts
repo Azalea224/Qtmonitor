@@ -295,12 +295,12 @@
 <context>
     <name>HistoryGraph</name>
     <message>
-        <location filename="../src/tabs/historygraph.cpp" line="265"/>
+        <location filename="../src/tabs/historygraph.cpp" line="282"/>
         <source>%1s ago</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/historygraph.cpp" line="267"/>
+        <location filename="../src/tabs/historygraph.cpp" line="284"/>
         <source>now</source>
         <translation type="unfinished"></translation>
     </message>
@@ -346,93 +346,93 @@
 <context>
     <name>MemoryPage</name>
     <message>
-        <location filename="../src/tabs/memorypage.cpp" line="24"/>
-        <location filename="../src/tabs/memorypage.cpp" line="35"/>
+        <location filename="../src/tabs/memorypage.cpp" line="31"/>
+        <location filename="../src/tabs/memorypage.cpp" line="42"/>
         <source>Memory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/memorypage.cpp" line="33"/>
+        <location filename="../src/tabs/memorypage.cpp" line="40"/>
         <source>Memory / swap usage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/memorypage.cpp" line="36"/>
+        <location filename="../src/tabs/memorypage.cpp" line="43"/>
         <source>Swap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/memorypage.cpp" line="79"/>
+        <location filename="../src/tabs/memorypage.cpp" line="95"/>
         <source>Details</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/memorypage.cpp" line="88"/>
+        <location filename="../src/tabs/memorypage.cpp" line="104"/>
         <source>Memory module details unavailable — the udev database has no DMI memory properties on this system (needs systemd 255+ or a boot-time udev trigger).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/memorypage.cpp" line="114"/>
+        <location filename="../src/tabs/memorypage.cpp" line="130"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/memorypage.cpp" line="115"/>
+        <location filename="../src/tabs/memorypage.cpp" line="131"/>
         <source>Configuration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/memorypage.cpp" line="116"/>
+        <location filename="../src/tabs/memorypage.cpp" line="132"/>
         <source>%1 × %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/memorypage.cpp" line="121"/>
+        <location filename="../src/tabs/memorypage.cpp" line="137"/>
         <source>%1 MT/s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/memorypage.cpp" line="125"/>
+        <location filename="../src/tabs/memorypage.cpp" line="141"/>
         <source> (rated %1 MT/s)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/memorypage.cpp" line="128"/>
+        <location filename="../src/tabs/memorypage.cpp" line="144"/>
         <source>Speed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/memorypage.cpp" line="130"/>
+        <location filename="../src/tabs/memorypage.cpp" line="146"/>
         <source>Manufacturer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/memorypage.cpp" line="131"/>
+        <location filename="../src/tabs/memorypage.cpp" line="147"/>
         <source>Part number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/memorypage.cpp" line="133"/>
+        <location filename="../src/tabs/memorypage.cpp" line="149"/>
         <source>Ranks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/memorypage.cpp" line="166"/>
+        <location filename="../src/tabs/memorypage.cpp" line="182"/>
         <source>Memory — %1 / %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/memorypage.cpp" line="169"/>
+        <location filename="../src/tabs/memorypage.cpp" line="185"/>
         <source>%1% used</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/memorypage.cpp" line="172"/>
+        <location filename="../src/tabs/memorypage.cpp" line="188"/>
         <source>Swap: %1 / %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/memorypage.cpp" line="176"/>
+        <location filename="../src/tabs/memorypage.cpp" line="192"/>
         <source>Swap: none configured</source>
         <translation type="unfinished"></translation>
     </message>
@@ -611,23 +611,28 @@
 <context>
     <name>PerformancePage</name>
     <message>
-        <location filename="../src/tabs/performancepage.cpp" line="110"/>
+        <location filename="../src/tabs/performancepage.cpp" line="111"/>
         <source>CPU</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/performancepage.cpp" line="112"/>
+        <location filename="../src/tabs/performancepage.cpp" line="113"/>
         <source>Memory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/performancepage.cpp" line="154"/>
+        <location filename="../src/tabs/performancepage.cpp" line="157"/>
         <source>GPU %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/performancepage.cpp" line="155"/>
+        <location filename="../src/tabs/performancepage.cpp" line="158"/>
         <source>GPU</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tabs/performancepage.cpp" line="199"/>
+        <source>Sensors</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -781,17 +786,17 @@
     <message numerus="yes">
         <location filename="../src/tabs/processespage.cpp" line="172"/>
         <source>%n process(es)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n process</numerusform>
+            <numerusform>%n processes</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/tabs/processespage.cpp" line="175"/>
         <source>%n kernel thread(s) hidden</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n kernel thread hidden</numerusform>
+            <numerusform>%n kernel threads hidden</numerusform>
         </translation>
     </message>
     <message>
@@ -883,6 +888,164 @@ Send SIGKILL to force it to stop?</source>
     </message>
 </context>
 <context>
+    <name>SensorProvider</name>
+    <message>
+        <location filename="../src/providers/hwmonprovider.cpp" line="103"/>
+        <source>Temperature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/gpusensors.cpp" line="67"/>
+        <source>Core</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/gpusensors.cpp" line="69"/>
+        <source>Board power</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/gpusensors.cpp" line="71"/>
+        <location filename="../src/providers/hwmonprovider.cpp" line="105"/>
+        <location filename="../src/providers/hwmonprovider.cpp" line="113"/>
+        <source>Fan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/hwmonprovider.cpp" line="107"/>
+        <source>Voltage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/hwmonprovider.cpp" line="109"/>
+        <source>Power</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/hwmonprovider.cpp" line="111"/>
+        <source>Current</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/hwmonprovider.cpp" line="128"/>
+        <location filename="../src/providers/hwmonprovider.cpp" line="129"/>
+        <location filename="../src/providers/hwmonprovider.cpp" line="130"/>
+        <location filename="../src/providers/hwmonprovider.cpp" line="131"/>
+        <source>CPU</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/hwmonprovider.cpp" line="132"/>
+        <location filename="../src/providers/hwmonprovider.cpp" line="133"/>
+        <location filename="../src/providers/hwmonprovider.cpp" line="134"/>
+        <location filename="../src/providers/hwmonprovider.cpp" line="135"/>
+        <location filename="../src/providers/hwmonprovider.cpp" line="136"/>
+        <source>GPU</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/hwmonprovider.cpp" line="137"/>
+        <source>NVMe drive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/hwmonprovider.cpp" line="138"/>
+        <source>Drive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/hwmonprovider.cpp" line="139"/>
+        <location filename="../src/providers/hwmonprovider.cpp" line="140"/>
+        <source>Memory module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/hwmonprovider.cpp" line="141"/>
+        <source>ACPI thermal zone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/hwmonprovider.cpp" line="142"/>
+        <location filename="../src/providers/hwmonprovider.cpp" line="143"/>
+        <source>Wi-Fi adapter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/gpusensors.cpp" line="63"/>
+        <location filename="../src/providers/hwmonprovider.cpp" line="232"/>
+        <source>the GPU page</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SensorsPage</name>
+    <message>
+        <location filename="../src/tabs/sensorspage.cpp" line="50"/>
+        <source>Sensors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tabs/sensorspage.cpp" line="64"/>
+        <source>Temperatures</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tabs/sensorspage.cpp" line="137"/>
+        <source>%1 RPM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tabs/sensorspage.cpp" line="139"/>
+        <source>%1 V</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tabs/sensorspage.cpp" line="141"/>
+        <source>%1 W</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tabs/sensorspage.cpp" line="143"/>
+        <source>%1 A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tabs/sensorspage.cpp" line="145"/>
+        <source>%1 %</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tabs/sensorspage.cpp" line="158"/>
+        <source>%1 · %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tabs/sensorspage.cpp" line="168"/>
+        <source>Also shown on %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tabs/sensorspage.cpp" line="186"/>
+        <source>critical at %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tabs/sensorspage.cpp" line="189"/>
+        <source>high at %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tabs/sensorspage.cpp" line="252"/>
+        <source>%1 readings · hottest %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tabs/sensorspage.cpp" line="255"/>
+        <source>%1 readings</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>SessionProvider</name>
     <message>
         <location filename="../src/providers/sessionprovider.cpp" line="109"/>
@@ -897,35 +1060,35 @@ Send SIGKILL to force it to stop?</source>
     <message numerus="yes">
         <location filename="../src/providers/sessionprovider.cpp" line="142"/>
         <source>%n session(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n session</numerusform>
+            <numerusform>%n sessions</numerusform>
         </translation>
     </message>
 </context>
 <context>
     <name>Settings</name>
     <message>
-        <location filename="../src/settings.cpp" line="195"/>
+        <location filename="../src/settings.cpp" line="202"/>
         <source>%1 °F</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings.cpp" line="197"/>
+        <location filename="../src/settings.cpp" line="204"/>
         <source>%1 °C</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/settings.cpp" line="217"/>
+        <location filename="../src/settings.cpp" line="224"/>
         <source>%n second(s)</source>
         <comment>poll interval</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n second</numerusform>
+            <numerusform>%n seconds</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="../src/settings.cpp" line="219"/>
+        <location filename="../src/settings.cpp" line="226"/>
         <source>%1 seconds</source>
         <comment>fractional poll interval</comment>
         <translation type="unfinished"></translation>
@@ -1075,9 +1238,9 @@ Runs only on: %1</source>
     <message numerus="yes">
         <location filename="../src/tabs/startuppage.cpp" line="273"/>
         <source>%n item(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n item</numerusform>
+            <numerusform>%n items</numerusform>
         </translation>
     </message>
     <message>
@@ -1196,9 +1359,9 @@ Runs only on: %1</source>
     <message numerus="yes">
         <location filename="../src/tabs/userspage.cpp" line="412"/>
         <source>%n user(s) with running processes</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n user with running processes</numerusform>
+            <numerusform>%n users with running processes</numerusform>
         </translation>
     </message>
     <message>
@@ -1221,16 +1384,11 @@ Runs only on: %1</source>
     </message>
     <message>
         <location filename="../src/providers/optionaltools.cpp" line="22"/>
-        <source>Temperature sensors</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/providers/optionaltools.cpp" line="24"/>
         <source>systemd user services</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/optionaltools.cpp" line="77"/>
+        <location filename="../src/providers/optionaltools.cpp" line="75"/>
         <source>%1 need %2 (package %3), which is not installed.</source>
         <translation type="unfinished"></translation>
     </message>

@@ -46,6 +46,26 @@ public:
 
     void pushValue(int seriesIndex, double value);
 
+    // Whether the area under each line is filled. On by default, which is
+    // right for the one- and two-series charts this widget was built for.
+    //
+    // Turn it off once a chart carries several series. Every series starts
+    // from the same zero, so their translucent fills stack: with six
+    // temperature lines the overlap compounds into an opaque block that
+    // swallows the bottom two thirds of the plot, and a fill that is drawn
+    // for all six conveys nothing none of them already showed.
+    void setFilled(bool filled);
+
+    // Drops every retained sample, keeping the series themselves.
+    //
+    // Needed because the buffer holds raw numbers with no unit attached, so a
+    // chart whose unit changes underneath it — temperatures when the °C/°F
+    // setting is switched — would otherwise draw the old samples as if they
+    // had always been in the new unit. Restarting the window is the honest
+    // answer: it costs one 60-second history on a setting nobody changes
+    // twice, and the alternative is a graph that lies for a minute.
+    void clearHistory();
+
     QSize sizeHint() const override;
     QSize minimumSizeHint() const override;
 
@@ -75,6 +95,7 @@ private:
     QString m_yUnit;
     AxisFormat m_axisFormat = AxisFormat::Number;
     bool m_autoScale = false;
+    bool m_filled = true;
     double m_autoScaleFloor = 1.0;
     QVector<Series> m_series;
 };
