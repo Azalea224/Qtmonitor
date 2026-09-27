@@ -647,121 +647,138 @@
 <context>
     <name>ProcessModel</name>
     <message>
-        <location filename="../src/processmodel.cpp" line="38"/>
+        <location filename="../src/processmodel.cpp" line="41"/>
         <location filename="../src/tabs/userspage.cpp" line="23"/>
         <source>Running</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/processmodel.cpp" line="40"/>
+        <location filename="../src/processmodel.cpp" line="43"/>
         <location filename="../src/tabs/userspage.cpp" line="25"/>
         <source>Sleeping</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/processmodel.cpp" line="42"/>
+        <location filename="../src/processmodel.cpp" line="45"/>
         <location filename="../src/tabs/userspage.cpp" line="27"/>
         <source>Disk wait</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/processmodel.cpp" line="44"/>
+        <location filename="../src/processmodel.cpp" line="47"/>
         <location filename="../src/tabs/userspage.cpp" line="29"/>
         <source>Zombie</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/processmodel.cpp" line="46"/>
+        <location filename="../src/processmodel.cpp" line="49"/>
         <location filename="../src/tabs/userspage.cpp" line="31"/>
         <source>Stopped</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/processmodel.cpp" line="48"/>
+        <location filename="../src/processmodel.cpp" line="51"/>
         <location filename="../src/tabs/userspage.cpp" line="33"/>
         <source>Traced</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/processmodel.cpp" line="50"/>
+        <location filename="../src/processmodel.cpp" line="53"/>
         <location filename="../src/tabs/userspage.cpp" line="35"/>
         <source>Idle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/processmodel.cpp" line="52"/>
+        <location filename="../src/processmodel.cpp" line="55"/>
         <source>Dead</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/processmodel.cpp" line="87"/>
+        <location filename="../src/processmodel.cpp" line="149"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/processmodel.cpp" line="89"/>
+        <location filename="../src/processmodel.cpp" line="151"/>
         <source>PID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/processmodel.cpp" line="91"/>
+        <location filename="../src/processmodel.cpp" line="153"/>
         <source>User</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/processmodel.cpp" line="93"/>
+        <location filename="../src/processmodel.cpp" line="155"/>
         <source>CPU</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/processmodel.cpp" line="95"/>
+        <location filename="../src/processmodel.cpp" line="157"/>
         <source>Memory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/processmodel.cpp" line="97"/>
+        <location filename="../src/processmodel.cpp" line="159"/>
         <source>State</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/processmodel.cpp" line="99"/>
+        <location filename="../src/processmodel.cpp" line="161"/>
         <source>Nice</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/processmodel.cpp" line="101"/>
+        <location filename="../src/processmodel.cpp" line="163"/>
         <source>Threads</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/processmodel.cpp" line="103"/>
+        <location filename="../src/processmodel.cpp" line="165"/>
         <source>Disk read</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/processmodel.cpp" line="105"/>
+        <location filename="../src/processmodel.cpp" line="167"/>
         <source>Disk write</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/processmodel.cpp" line="107"/>
+        <location filename="../src/processmodel.cpp" line="169"/>
         <source>GPU</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/processmodel.cpp" line="109"/>
+        <location filename="../src/processmodel.cpp" line="171"/>
         <source>GPU video</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/processmodel.cpp" line="111"/>
+        <location filename="../src/processmodel.cpp" line="173"/>
         <source>Command line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/processmodel.cpp" line="183"/>
+        <location filename="../src/processmodel.cpp" line="253"/>
         <source>%1 (kernel thread, PID %2)</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/processmodel.cpp" line="343"/>
+        <source>%1: %n process(es)</source>
+        <comment>group tooltip</comment>
+        <translation>
+            <numerusform>%1: %n process</numerusform>
+            <numerusform>%1: %n processes</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/processmodel.cpp" line="371"/>
+        <source>%n user(s)</source>
+        <translation>
+            <numerusform>%n user</numerusform>
+            <numerusform>%n users</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -773,8 +790,8 @@
     </message>
     <message>
         <location filename="../src/tabs/processespage.cpp" line="41"/>
-        <location filename="../src/tabs/processespage.cpp" line="322"/>
-        <location filename="../src/tabs/processespage.cpp" line="339"/>
+        <location filename="../src/tabs/processespage.cpp" line="333"/>
+        <location filename="../src/tabs/processespage.cpp" line="350"/>
         <source>End process</source>
         <translation type="unfinished"></translation>
     </message>
@@ -784,7 +801,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/tabs/processespage.cpp" line="172"/>
+        <location filename="../src/tabs/processespage.cpp" line="183"/>
         <source>%n process(es)</source>
         <translation>
             <numerusform>%n process</numerusform>
@@ -792,7 +809,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/tabs/processespage.cpp" line="175"/>
+        <location filename="../src/tabs/processespage.cpp" line="186"/>
         <source>%n kernel thread(s) hidden</source>
         <translation>
             <numerusform>%n kernel thread hidden</numerusform>
@@ -800,87 +817,87 @@
         </translation>
     </message>
     <message>
-        <location filename="../src/tabs/processespage.cpp" line="214"/>
+        <location filename="../src/tabs/processespage.cpp" line="225"/>
         <source>Authentication unavailable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/processespage.cpp" line="215"/>
+        <location filename="../src/tabs/processespage.cpp" line="226"/>
         <source>%1 belongs to another user, so signalling it requires authorization.
 
 Qtmonitor is not installed system-wide, so the privileged helper and its polkit policy are unavailable. Install the package to enable this.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/processespage.cpp" line="238"/>
+        <location filename="../src/tabs/processespage.cpp" line="249"/>
         <source>Could not signal process</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/processespage.cpp" line="240"/>
+        <location filename="../src/tabs/processespage.cpp" line="251"/>
         <source>Sending %1 to %2 (PID %3) failed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/processespage.cpp" line="249"/>
+        <location filename="../src/tabs/processespage.cpp" line="260"/>
         <source>Columns</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/processespage.cpp" line="258"/>
+        <location filename="../src/tabs/processespage.cpp" line="269"/>
         <source> (no GPU detected)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/processespage.cpp" line="283"/>
+        <location filename="../src/tabs/processespage.cpp" line="294"/>
         <source>End process (SIGTERM)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/processespage.cpp" line="284"/>
+        <location filename="../src/tabs/processespage.cpp" line="295"/>
         <source>Kill process (SIGKILL)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/processespage.cpp" line="293"/>
-        <location filename="../src/tabs/processespage.cpp" line="306"/>
-        <location filename="../src/tabs/processespage.cpp" line="380"/>
+        <location filename="../src/tabs/processespage.cpp" line="304"/>
+        <location filename="../src/tabs/processespage.cpp" line="317"/>
+        <location filename="../src/tabs/processespage.cpp" line="391"/>
         <source>Kill process</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/processespage.cpp" line="294"/>
+        <location filename="../src/tabs/processespage.cpp" line="305"/>
         <source>Send SIGKILL to %1 (PID %2)?
 
 The process is terminated immediately and cannot save its work or clean up.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/processespage.cpp" line="323"/>
+        <location filename="../src/tabs/processespage.cpp" line="334"/>
         <source>Send SIGTERM to %1 (PID %2)?
 
 The process is asked to shut down and may save its work first.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/processespage.cpp" line="359"/>
+        <location filename="../src/tabs/processespage.cpp" line="370"/>
         <source>Process already exited</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/processespage.cpp" line="360"/>
+        <location filename="../src/tabs/processespage.cpp" line="371"/>
         <source>%1 (PID %2) has exited but is still listed as a zombie, because its parent has not collected its exit status.
 
 It uses no CPU or memory and cannot be killed — it disappears when the parent reaps it or itself exits.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/processespage.cpp" line="368"/>
+        <location filename="../src/tabs/processespage.cpp" line="379"/>
         <source>Process still running</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/processespage.cpp" line="369"/>
+        <location filename="../src/tabs/processespage.cpp" line="380"/>
         <source>%1 (PID %2) has not exited %3 seconds after SIGTERM.
 
 Send SIGKILL to force it to stop?</source>

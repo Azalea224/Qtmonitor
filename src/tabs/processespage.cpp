@@ -62,7 +62,8 @@ ProcessesPage::ProcessesPage(Sampler *sampler, QWidget *parent)
     layout->addLayout(toolbar);
 
     m_view->setModel(m_proxy);
-    m_view->setRootIsDecorated(false); // flat table, not a tree
+    // Processes sharing a name are grouped under an expandable total row.
+    m_view->setRootIsDecorated(true);
     m_view->setUniformRowHeights(true); // lets the view skip per-row sizing
     m_view->setAlternatingRowColors(true);
     m_view->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -93,8 +94,12 @@ ProcessesPage::ProcessesPage(Sampler *sampler, QWidget *parent)
             this, &ProcessesPage::showHeaderMenu);
     connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged,
             this, [this] { m_endButton->setEnabled(selectedPid() > 0); });
-    connect(m_view, &QAbstractItemView::doubleClicked,
-            this, [this] { m_endButton->setFocus(); });
+    // On a group row, double-click keeps its default job of expanding it.
+    connect(m_view, &QAbstractItemView::doubleClicked, this, [this] {
+        if (selectedPid() > 0) {
+            m_endButton->setFocus();
+        }
+    });
 
     connect(sampler, &Sampler::processesSampled,
             this, &ProcessesPage::onProcessesSampled);
@@ -168,7 +173,13 @@ void ProcessesPage::onProcessesSampled(const ProcessSnapshot &snapshot)
 {
     m_model->setSnapshot(snapshot);
 
-    const int shown = m_proxy->rowCount();
+    // Count processes, not rows: a group row stands for all of its visible
+    // children.
+    int shown = 0;
+    for (int row = 0; row < m_proxy->rowCount(); ++row) {
+        const int children = m_proxy->rowCount(m_proxy->index(row, 0));
+        shown += children > 0 ? children : 1;
+    }
     QString text = tr("%n process(es)", "", shown);
     if (!m_kernelThreads->isChecked() && snapshot.kernelThreadCount > 0) {
         text += QStringLiteral("  ·  ")

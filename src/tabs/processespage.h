@@ -15,8 +15,9 @@ class ProcessModel;
 class ProcessFilterProxy;
 class Sampler;
 
-// Processes tab: searchable, sortable process table with configurable
-// columns and signal-based process termination.
+// Processes tab: searchable, sortable process list with configurable
+// columns and signal-based process termination. Processes that share a name
+// are grouped under one expandable row showing their totals.
 class ProcessesPage : public QWidget
 {
     Q_OBJECT

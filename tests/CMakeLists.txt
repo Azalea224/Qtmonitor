@@ -46,3 +46,24 @@ add_test(NAME providers COMMAND tst_providers)
 set_tests_properties(providers PROPERTIES
     ENVIRONMENT "QT_QPA_PLATFORM=offscreen"
 )
+
+# Model tests. ProcessModel only needs the ProcessInfo struct, not the /proc
+# walker behind it, so no provider sources are compiled in. Qt6::Test brings
+# QAbstractItemModelTester, which checks the tree's invariants on every diff.
+qt_add_executable(tst_processmodel
+    tst_processmodel.cpp
+    ../src/processmodel.cpp
+)
+
+target_include_directories(tst_processmodel PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+target_link_libraries(tst_processmodel PRIVATE
+    Qt6::Core
+    Qt6::Test
+)
+
+add_test(NAME processmodel COMMAND tst_processmodel)
+
+set_tests_properties(processmodel PROPERTIES
+    ENVIRONMENT "QT_QPA_PLATFORM=offscreen"
+)
